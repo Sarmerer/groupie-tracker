@@ -39,5 +39,7 @@ type IndexD struct {
 
 type IndexR struct {
 	ID             int
-	DatesLocations interface{}
+	DatesLocations m
 }
+
+type m map[string][]string

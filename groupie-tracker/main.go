@@ -48,8 +48,9 @@ func main() {
 		fmt.Println("")
 		fmt.Println("Relation")
 		fmt.Println(relation.IndexR[pers].ID)
-		s := relation.IndexR[pers].DatesLocations
-		fmt.Println(s)
+		for _, loc := range locations.IndexL[pers].Locations {
+			fmt.Println(loc, relation.IndexR[pers].DatesLocations[loc])
+		}
 		fmt.Println("")
 	}
 }
