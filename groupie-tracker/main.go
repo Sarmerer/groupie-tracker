@@ -9,59 +9,96 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	student "./student"
 )
 
-// A Response struct to map the Entire Response
-type Users struct {
-	Users []User
-}
-
-type User struct {
-	ID         int
-	Name       string
-	Members    []string
-	FirstAlbum string
-}
+var API_LINK = "https://groupietrackers.herokuapp.com/api"
+var response student.Response
+var artists []student.Artist
+var locations student.Locations
+var dates student.Dates
+var relation student.Relation
 
 func main() {
-	response, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
+
+	sendRequest(API_LINK)
+	sendRequest(response.Artists)
+	sendRequest(response.Locations)
+	sendRequest(response.Dates)
+	sendRequest(response.Relation)
+
+	persons := randomNums(2)
+	for _, pers := range persons {
+		fmt.Println("Member #", pers)
+		fmt.Println("Artiststs")
+		fmt.Println(artists[pers].ID)
+		fmt.Println(artists[pers].Name)
+		fmt.Println(artists[pers].FirstAlbum)
+		fmt.Println(artists[pers].Members)
+		fmt.Println("")
+		fmt.Println("Locations")
+		fmt.Println(locations.IndexL[pers].ID)
+		fmt.Println(locations.IndexL[pers].Dates)
+		fmt.Println(locations.IndexL[pers].Locations)
+		fmt.Println("")
+		fmt.Println("Dates")
+		fmt.Println(dates.IndexD[pers].ID)
+		fmt.Println(dates.IndexD[pers].Dates)
+		fmt.Println("")
+		fmt.Println("Relation")
+		fmt.Println(relation.IndexR[pers].ID)
+		s := relation.IndexR[pers].DatesLocations
+		fmt.Println(s)
+		fmt.Println("")
+	}
+}
+
+func sendRequest(link string) {
+	res, err := http.Get(link)
 	if err != nil {
 		fmt.Print(err.Error())
 		os.Exit(1)
 	}
 
-	responseData, err := ioutil.ReadAll(response.Body)
+	responseData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	var users []User
-	json.Unmarshal(responseData, &users)
-
-	persons := randomNums(5)
-
-	for _, pers := range persons {
-		fmt.Println("Member #", pers)
-		fmt.Println(users[pers].ID)
-		fmt.Println(users[pers].Name)
-		fmt.Println(users[pers].FirstAlbum)
-		fmt.Println(users[pers].Members)
-		fmt.Println("")
-		fmt.Println("")
-		fmt.Println("")
+	switch link {
+	case API_LINK:
+		json.Unmarshal(responseData, &response)
+		break
+	case response.Artists:
+		json.Unmarshal(responseData, &artists)
+		break
+	case response.Locations:
+		json.Unmarshal(responseData, &locations)
+		break
+	case response.Dates:
+		json.Unmarshal(responseData, &dates)
+		break
+	case response.Relation:
+		json.Unmarshal(responseData, &relation)
+		break
+	default:
+		fmt.Println("500 internal error")
+		break
 	}
+	return
 }
 
 func randomNums(size int) []int {
 
 	res := make([]int, size)
-	var m map[int]int
+	m := make(map[int]int)
 
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < size; i++ {
 		for {
 			n := rand.Intn(52)
 			if _, found := m[n]; !found {
+				m[n] = n
 				res[i] = n
 				break
 			}
