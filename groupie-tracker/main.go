@@ -8,10 +8,14 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"text/template"
 	"time"
 
 	student "./student"
 )
+
+var indexTpl *template.Template
+var tpl404 *template.Template
 
 var API_LINK = "https://groupietrackers.herokuapp.com/api"
 var response student.Response
@@ -20,42 +24,94 @@ var locations student.Locations
 var dates student.Dates
 var relation student.Relation
 
+type Data struct {
+	ActorsID      int
+	Image         string
+	Name          string
+	Members       []string
+	CreationDate  int
+	FirstAlbum    string
+	LocationsLink string
+	ConcertDates  string
+	Relations     string
+
+	Locations      []string
+	LocationsDates string
+
+	Dates []string
+
+	ErrorCode int
+	Error     string
+}
+
+func init() {
+	indexTpl = template.Must(template.ParseGlob("static/templates/index/*.html"))
+	//tpl404 = template.Must(template.ParseGlob("static/templates/404/*.html"))
+	SendRequest(student.API_LINK)
+	SendRequest(response.Artists)
+	SendRequest(response.Locations)
+	SendRequest(response.Dates)
+	SendRequest(response.Relation)
+
+	t := time.Now()
+	fmt.Println(t.Format("3:4:5pm"), "Init complete.")
+}
+
 func main() {
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.HandleFunc("/", index)
 
-	sendRequest(API_LINK)
-	sendRequest(response.Artists)
-	sendRequest(response.Locations)
-	sendRequest(response.Dates)
-	sendRequest(response.Relation)
-
-	persons := randomNums(2)
-	for _, pers := range persons {
-		fmt.Println("Member #", pers)
-		fmt.Println("Artiststs")
-		fmt.Println(artists[pers].ID)
-		fmt.Println(artists[pers].Name)
-		fmt.Println(artists[pers].FirstAlbum)
-		fmt.Println(artists[pers].Members)
-		fmt.Println("")
-		fmt.Println("Locations")
-		fmt.Println(locations.IndexL[pers].ID)
-		fmt.Println(locations.IndexL[pers].Dates)
-		fmt.Println(locations.IndexL[pers].Locations)
-		fmt.Println("")
-		fmt.Println("Dates")
-		fmt.Println(dates.IndexD[pers].ID)
-		fmt.Println(dates.IndexD[pers].Dates)
-		fmt.Println("")
-		fmt.Println("Relation")
-		fmt.Println(relation.IndexR[pers].ID)
-		for _, loc := range locations.IndexL[pers].Locations {
-			fmt.Println(loc, relation.IndexR[pers].DatesLocations[loc])
-		}
-		fmt.Println("")
+	t := time.Now()
+	fmt.Println(t.Format("3:4:5pm"), "Starting server, go to localhost:8080")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatal(err)
 	}
 }
 
-func sendRequest(link string) {
+func index(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		data404 := Data{
+			ErrorCode: 404,
+			Error:     "404 Page not found",
+		}
+		tpl404.ExecuteTemplate(w, "404.html", data404)
+		return
+	}
+
+	switch r.Method {
+	case "GET":
+
+		persons := randomNums(2)
+		var Arr []Data
+		for _, pers := range persons {
+			data := Data{
+				ActorsID:      artists[pers].ID,
+				Image:         artists[pers].Image,
+				Name:          artists[pers].Name,
+				Members:       artists[pers].Members,
+				CreationDate:  artists[pers].CreationDate,
+				FirstAlbum:    artists[pers].FirstAlbum,
+				LocationsLink: artists[pers].Locations,
+				ConcertDates:  artists[pers].ConcertDates,
+				Relations:     artists[pers].Relations,
+
+				Locations:      locations.IndexL[pers].Locations,
+				LocationsDates: locations.IndexL[pers].Dates,
+
+				Dates: dates.IndexD[pers].Dates,
+			}
+			Arr = append(Arr, data)
+		}
+
+		indexTpl.ExecuteTemplate(w, "index.html", Arr)
+		break
+	default:
+		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+		break
+	}
+}
+
+func SendRequest(link string) {
 	res, err := http.Get(link)
 	if err != nil {
 		fmt.Print(err.Error())

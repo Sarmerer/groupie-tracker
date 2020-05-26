@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Card Hover Effects</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>{{range $index, $item := .}}
+    <div class="container">
+        <div class="card">
+            <div class="face face1">
+                <div class="content">
+                    <img src={{ $item.Image }}>
+                    <h3>{{ $item.Name }}</h3>
+                </div>
+            </div>
+            <div class="face face2">
+                <div class="content">
+                    <p>{{ $item.Members }}</p>
+                    <p>{{ $item.FirstAlbum }}</p>
+                        <a href={{$item.ConcertDates}}>Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>{{end}}
+</html>
