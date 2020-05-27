@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
 	"text/template"
 	"time"
 
@@ -40,8 +41,9 @@ type Data struct {
 
 	Dates []string
 
-	ErrorCode int
-	Error     string
+	ErrorCode   int
+	Error       string
+	SliderInput int
 }
 
 func init() {
@@ -69,46 +71,60 @@ func main() {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		data404 := Data{
-			ErrorCode: 404,
-			Error:     "404 Page not found",
-		}
-		tpl404.ExecuteTemplate(w, "404.html", data404)
-		return
-	}
+	// if r.URL.Path != "/" {
+	// 	data404 := Data{
+	// 		ErrorCode: 404,
+	// 		Error:     "404 Page not found",
+	// 	}
+	// 	tpl404.ExecuteTemplate(w, "404.html", data404)
+	// 	return
+	// }
 
 	switch r.Method {
 	case "GET":
-
-		persons := randomNums(2)
-		var Arr []Data
-		for _, pers := range persons {
-			data := Data{
-				ActorsID:      artists[pers].ID,
-				Image:         artists[pers].Image,
-				Name:          artists[pers].Name,
-				Members:       artists[pers].Members,
-				CreationDate:  artists[pers].CreationDate,
-				FirstAlbum:    artists[pers].FirstAlbum,
-				LocationsLink: artists[pers].Locations,
-				ConcertDates:  artists[pers].ConcertDates,
-				Relations:     artists[pers].Relations,
-
-				Locations:      locations.IndexL[pers].Locations,
-				LocationsDates: locations.IndexL[pers].Dates,
-
-				Dates: dates.IndexD[pers].Dates,
-			}
-			Arr = append(Arr, data)
+		Arr := creaateResponse(5)
+		indexTpl.ExecuteTemplate(w, "index.html", Arr)
+		break
+	case "POST":
+		amount, err := strconv.Atoi(r.FormValue("fname"))
+		if err != nil {
+			amount = 5
+			fmt.Println("Error:", err)
 		}
-
+		Arr := creaateResponse(amount)
 		indexTpl.ExecuteTemplate(w, "index.html", Arr)
 		break
 	default:
 		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
 		break
 	}
+}
+
+func creaateResponse(num int) []Data {
+	persons := randomNums(num)
+	var Arr []Data
+	for _, pers := range persons {
+		data := Data{
+			ActorsID:      artists[pers].ID,
+			Image:         artists[pers].Image,
+			Name:          artists[pers].Name,
+			Members:       artists[pers].Members,
+			CreationDate:  artists[pers].CreationDate,
+			FirstAlbum:    artists[pers].FirstAlbum,
+			LocationsLink: artists[pers].Locations,
+			ConcertDates:  artists[pers].ConcertDates,
+			Relations:     artists[pers].Relations,
+
+			Locations:      locations.IndexL[pers].Locations,
+			LocationsDates: locations.IndexL[pers].Dates,
+
+			Dates: dates.IndexD[pers].Dates,
+
+			SliderInput: num,
+		}
+		Arr = append(Arr, data)
+	}
+	return Arr
 }
 
 func SendRequest(link string) {
