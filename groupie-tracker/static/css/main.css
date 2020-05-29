@@ -13,6 +13,15 @@ body {
     flex-wrap: wrap;
 }
 
+a {
+    text-decoration: none;
+    color: #3e3e3e;
+}
+
+a:hover {
+    color: #ff9292;
+}
+
 h2 {
     color: #3e3e3e;
     font-family: Avenir;
@@ -81,6 +90,8 @@ h2 {
 }
 
 .card .trade {
+    height: 50px;
+    margin-top: 40px;
     cursor: pointer;
     background: transparent;
     border: none;
@@ -217,4 +228,39 @@ img {
     /* Green background */
     cursor: pointer;
     /* Cursor on hover */
+}
+
+.collapsible {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    float: right;
+    outline: none;
+    font-size: 15px;
+}
+
+.active,
+.collapsible:hover {
+    background-color: #555;
+}
+
+.collapsible:after {
+    content: '\002B';
+    color: white;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.active:after {
+    content: "\2212";
+}
+
+.content {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background-color: #f1f1f1;
 }

@@ -44,7 +44,7 @@ type IndexD struct {
 
 type IndexR struct {
 	ID             int
-	DatesLocations m
+	DatesLocations M
 }
 
-type m map[string][]string
+type M map[string][]string

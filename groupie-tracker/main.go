@@ -39,11 +39,13 @@ type Data struct {
 	Locations      []string
 	LocationsDates string
 
-	Dates []string
+	Dates          []string
+	RelationStruct student.M
 
 	ErrorCode   int
 	Error       string
 	SliderInput int
+	JSONLen     int
 }
 
 func init() {
@@ -82,16 +84,17 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		Arr := creaateResponse(5)
+		Arr := creaateResponse(10)
 		indexTpl.ExecuteTemplate(w, "index.html", Arr)
 		break
 	case "POST":
 		amount, err := strconv.Atoi(r.FormValue("fname"))
 		if err != nil {
-			amount = 5
+			amount = 10
 			fmt.Println("Error:", err)
 		}
 		Arr := creaateResponse(amount)
+		fmt.Println(relation.IndexR[0].DatesLocations["osaka-japan"])
 		indexTpl.ExecuteTemplate(w, "index.html", Arr)
 		break
 	default:
@@ -118,9 +121,11 @@ func creaateResponse(num int) []Data {
 			Locations:      locations.IndexL[pers].Locations,
 			LocationsDates: locations.IndexL[pers].Dates,
 
-			Dates: dates.IndexD[pers].Dates,
+			Dates:          dates.IndexD[pers].Dates,
+			RelationStruct: relation.IndexR[pers].DatesLocations,
 
 			SliderInput: num,
+			JSONLen:     len(artists),
 		}
 		Arr = append(Arr, data)
 	}

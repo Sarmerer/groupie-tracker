@@ -11,32 +11,33 @@
 
 <body>
     <div class="mainCont">
-        <form action="/" method="POST" id="sliderForm" name="form">
-            <div class="slidecontainer">
-                <input type="range" min="1" max="52" value="{{ (index . 0).SliderInput }}" class="slider" id="myRange">
-            </div>
-            <input type="number" id="fname" name="fname" value="{{ (index . 0).SliderInput }}" max="52">
-            <script>
-                var slider = document.getElementById("myRange");
-                var output = document.getElementById("fname");
-                output.innerHTML = slider.value;
-                slider.oninput = function() {
-                    document.getElementById("fname").value = this.value;
-                }
-                slider.onmouseup = function() {
-                    document.getElementById("sliderForm").submit();
-                }
-            </script>
-        </form>
+        <button class="collapsible"></button>
+        <div class="content">
+            <form action="/" method="POST" id="sliderForm" name="form">
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="{{ (index . 0).JSONLen }}" value="{{ (index . 0).SliderInput }}" class="slider" id="range-slider" step="1">
+                </div>
+                <input type="number" id="fname" name="fname" value="{{ (index . 0).SliderInput }}" max="{{ (index . 0).JSONLen }}" min="1">
+                <script src="/static/js/submitForm.js"></script>
+            </form>
+        </div>
+        <script src="/static/js/collapsible.js"></script>
         <div class="container">{{range $index, $item := .}}
             <div class="card">
                 <img src="{{$item.Image}}"></img>
                 <div class="info">
-                    <h2>{{$item.Name}}</h2>
-                    <div class="title">{{$item.FirstAlbum}}</div>
+                    <h2>
+                        <a target="_blank" rel="noopener noreferrer" href="https://groupietrackers.herokuapp.com/api/artists/{{$item.ActorsID}}">{{$item.Name}}</a>
+                    </h2>
+                    <div class="title">Created: {{$item.CreationDate}}</div>
+                    <div class="title">#1 album: <br>{{$item.FirstAlbum}}</div>
                     <div class="desc">
-                        {{range $i, $a := $item.Members}}
-                        <sub>{{$a}}</sub><br> {{end}}
+                        <p>
+                            {{range $i, $a := $item.Members}} {{ if (lt $i 4)}} {{$a}}
+                            <br> {{else if (eq $i 4)}}
+                            <a target="_blank" rel="noopener noreferrer" href="https://groupietrackers.herokuapp.com/api/artists/{{$item.ActorsID}}">...</a> {{else}} {{end}} {{end}}
+                            <!-- {{range $locIndex, $locItem := $item.Locations}} {{ $locItem }} {{index $item.RelationStruct $locItem}}<br> {{end}} -->
+                        </p>
                     </div>
                 </div>
                 <div class="actions">
