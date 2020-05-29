@@ -36,14 +36,13 @@
                             {{range $i, $a := $item.Members}} {{ if (lt $i 4)}} {{$a}}
                             <br> {{else if (eq $i 4)}}
                             <a target="_blank" rel="noopener noreferrer" href="https://groupietrackers.herokuapp.com/api/artists/{{$item.ActorsID}}">...</a> {{else}} {{end}} {{end}}
-                            <!-- {{range $locIndex, $locItem := $item.Locations}} {{ $locItem }} {{index $item.RelationStruct $locItem}}<br> {{end}} -->
                         </p>
                     </div>
                 </div>
                 <div class="actions">
                     <button class="trade">TRADE</button>
                     <div class="overlay"></div>
-                    <div class="heart-container">
+                    <div class="heart-container" onclick="alert('{{range $locIndex, $locItem := $item.Locations}}{{ $locItem}}:\n   {{range $_, $v := index $item.RelationStruct $locItem}}{{$v}}\n{{end}}\n{{end}}');">
                         <div class="heart"></div>
                     </div>
                 </div>
