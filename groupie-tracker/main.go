@@ -67,6 +67,7 @@ func init() {
 
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.HandleFunc("/favicon.ico", faviconHandler)
 	http.HandleFunc("/", index)
 
 	t := time.Now()
@@ -111,6 +112,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
 		break
 	}
+}
+
+func faviconHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "static/assets/favicon.ico")
 }
 
 func createResponse(num int) []Data {
