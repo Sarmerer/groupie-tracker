@@ -54,7 +54,7 @@ type Result struct {
 
 func init() {
 	indexTpl = template.Must(template.ParseGlob("static/templates/index/*.html"))
-	//tpl404 = template.Must(template.ParseGlob("static/templates/404/*.html"))
+	tpl404 = template.Must(template.ParseGlob("static/templates/404/*.html"))
 	SendRequest(student.API_LINK)
 	SendRequest(response.Artists)
 	SendRequest(response.Locations)
@@ -70,22 +70,22 @@ func main() {
 	http.HandleFunc("/", index)
 
 	t := time.Now()
-	fmt.Println(t.Format("3:4:5pm"), "Starting server, go to localhost:8000")
-	if err := http.ListenAndServe(":8000", nil); err != nil {
+	fmt.Println(t.Format("3:4:5pm"), "Starting server, go to localhost:8080")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
 
-	// if r.URL.Path != "/" {
-	// 	data404 := Data{
-	// 		ErrorCode: 404,
-	// 		Error:     "404 Page not found",
-	// 	}
-	// 	tpl404.ExecuteTemplate(w, "404.html", data404)
-	// 	return
-	// }
+	if r.URL.Path != "/" {
+		data404 := Data{
+			ErrorCode: 404,
+			Error:     "404 Page not found",
+		}
+		tpl404.ExecuteTemplate(w, "404.html", data404)
+		return
+	}
 
 	switch r.Method {
 	case "GET":
@@ -120,7 +120,6 @@ func createResponse(num int) []Data {
 		myDate, err := time.Parse("02-01-2006 15:04", artists[pers].FirstAlbum+" 04:35")
 		if err != nil {
 			panic(err)
-			//TODO 500 internal error
 		}
 		data := Data{
 			ActorsID:      artists[pers].ID,
@@ -152,13 +151,11 @@ func SendRequest(link string) {
 	if err != nil {
 		fmt.Print(err.Error())
 		os.Exit(1)
-		//TODO 500 internal error
 	}
 
 	responseData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
-		//TODO 500 internal error
 	}
 	switch link {
 	case API_LINK:
