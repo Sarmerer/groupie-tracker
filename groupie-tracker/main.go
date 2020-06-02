@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"sync"
 	"text/template"
 	"time"
 
@@ -55,11 +56,27 @@ type Result struct {
 func init() {
 	indexTpl = template.Must(template.ParseGlob("static/templates/index/*.html"))
 	tpl404 = template.Must(template.ParseGlob("static/templates/404/*.html"))
+	var wg sync.WaitGroup
 	SendRequest(student.API_LINK)
-	SendRequest(response.Artists)
-	SendRequest(response.Locations)
-	SendRequest(response.Dates)
-	SendRequest(response.Relation)
+	wg.Add(4)
+	go func() {
+		SendRequest(response.Artists)
+		wg.Done()
+	}()
+	go func() {
+		SendRequest(response.Locations)
+		wg.Done()
+	}()
+	go func() {
+		SendRequest(response.Dates)
+		wg.Done()
+	}()
+	go func() {
+		SendRequest(response.Relation)
+		wg.Done()
+	}()
+
+	wg.Wait()
 
 	t := time.Now()
 	fmt.Println(t.Format("3:4:5pm"), "Init complete.")
