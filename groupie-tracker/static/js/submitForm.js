@@ -1,9 +1,9 @@
 var slider = document.getElementById("range-slider");
 var output = document.getElementById("fname");
 output.innerHTML = slider.value;
-slider.oninput = function() {
+slider.oninput = function () {
     document.getElementById("fname").value = this.value;
 }
-slider.onmouseup = function() {
+slider.onmouseup = function () {
     document.getElementById("sliderForm").submit();
 }

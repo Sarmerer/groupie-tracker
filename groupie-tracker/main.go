@@ -48,6 +48,10 @@ type Data struct {
 	JSONLen     int
 }
 
+type Result struct {
+	DataArr []Data
+}
+
 func init() {
 	indexTpl = template.Must(template.ParseGlob("static/templates/index/*.html"))
 	//tpl404 = template.Must(template.ParseGlob("static/templates/404/*.html"))
@@ -66,13 +70,14 @@ func main() {
 	http.HandleFunc("/", index)
 
 	t := time.Now()
-	fmt.Println(t.Format("3:4:5pm"), "Starting server, go to localhost:8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	fmt.Println(t.Format("3:4:5pm"), "Starting server, go to localhost:8000")
+	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
+
 	// if r.URL.Path != "/" {
 	// 	data404 := Data{
 	// 		ErrorCode: 404,
@@ -84,18 +89,23 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		Arr := creaateResponse(10)
-		indexTpl.ExecuteTemplate(w, "index.html", Arr)
+		Arr := createResponse(9)
+		result := Result{
+			DataArr: Arr,
+		}
+		indexTpl.ExecuteTemplate(w, "index.html", result)
 		break
 	case "POST":
 		amount, err := strconv.Atoi(r.FormValue("fname"))
 		if err != nil {
-			amount = 10
+			amount = 9
 			fmt.Println("Error:", err)
 		}
-		Arr := creaateResponse(amount)
-		fmt.Println(relation.IndexR[0].DatesLocations["osaka-japan"])
-		indexTpl.ExecuteTemplate(w, "index.html", Arr)
+		Arr := createResponse(amount)
+		result := Result{
+			DataArr: Arr,
+		}
+		indexTpl.ExecuteTemplate(w, "index.html", result)
 		break
 	default:
 		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
@@ -103,17 +113,22 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func creaateResponse(num int) []Data {
+func createResponse(num int) []Data {
 	persons := randomNums(num)
 	var Arr []Data
 	for _, pers := range persons {
+		myDate, err := time.Parse("02-01-2006 15:04", artists[pers].FirstAlbum+" 04:35")
+		if err != nil {
+			panic(err)
+			//TODO 500 internal error
+		}
 		data := Data{
 			ActorsID:      artists[pers].ID,
 			Image:         artists[pers].Image,
 			Name:          artists[pers].Name,
 			Members:       artists[pers].Members,
 			CreationDate:  artists[pers].CreationDate,
-			FirstAlbum:    artists[pers].FirstAlbum,
+			FirstAlbum:    myDate.Format("01/02/2006"),
 			LocationsLink: artists[pers].Locations,
 			ConcertDates:  artists[pers].ConcertDates,
 			Relations:     artists[pers].Relations,
@@ -137,11 +152,13 @@ func SendRequest(link string) {
 	if err != nil {
 		fmt.Print(err.Error())
 		os.Exit(1)
+		//TODO 500 internal error
 	}
 
 	responseData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
+		//TODO 500 internal error
 	}
 	switch link {
 	case API_LINK:
