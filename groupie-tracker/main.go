@@ -54,7 +54,6 @@ type Result struct {
 }
 
 func init() {
-	indexTpl = template.Must(template.ParseGlob("static/templates/index/*.html"))
 	tpl404 = template.Must(template.ParseGlob("static/templates/404/*.html"))
 	var wg sync.WaitGroup
 	SendRequest(student.API_LINK)
@@ -95,7 +94,7 @@ func main() {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-
+	indexTpl = template.Must(template.ParseGlob("static/templates/index/*.html"))
 	if r.URL.Path != "/" {
 		data404 := Data{
 			ErrorCode: 404,

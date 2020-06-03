@@ -29,7 +29,6 @@
                 <input type="range" min="1" max="{{ (index .DataArr 0).JSONLen }}"
                     value="{{ (index .DataArr 0).SliderInput }}" class="slider" id="range-slider" step="1">
             </div>
-            <script src="/static/js/submitForm.js"></script>
         </form>
     </div>
 
@@ -47,11 +46,10 @@
                 <div class="title">1<sup>st</sup> album: {{$item.FirstAlbum}}</div>
                 <div class="desc">
                     <p>
-                        {{range $i, $a := $item.Members}} {{ if (lt $i 4)}} {{$a}}
-                        <br> {{else if (eq $i 4)}}
-                        <a target="_blank" rel="noopener noreferrer"
-                            href="https://groupietrackers.herokuapp.com/api/artists/{{$item.ActorsID}}">...</a>
-                        {{else}} {{end}} {{end}}
+                        {{range $i, $a := $item.Members}}
+                        {{$a}}
+                        <br>
+                        {{end}}
                     </p>
                 </div>
             </div>
@@ -73,9 +71,9 @@
                         <h4 class="modal-title">{{$item.Name}}</h4>
                         <img src="{{$item.Image}}"></img>
                     </div>
-                    <div class="modal-body">
-                        <p>{{range $locIndex, $locItem := $item.Locations}}{{ $locItem}}:<br>
-                            {{range $_, $v := index $item.RelationStruct $locItem}}{{$v}}<br>{{end}}<br>{{end}}</p>
+                    <div class="modal-body" id="modal-body">
+                            <p>{{range $locIndex, $locItem := $item.Locations}}{{ $locItem}}:<br>
+                                {{range $_, $v := index $item.RelationStruct $locItem}}{{$v}}<br>{{end}}<br>{{end}}</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -86,7 +84,7 @@
         </div>
         {{end}}
     </div>
-
+    <script src="/static/js/submitForm.js"></script>
 </body>
 
 </html>
