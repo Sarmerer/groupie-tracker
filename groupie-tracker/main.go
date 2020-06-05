@@ -25,6 +25,7 @@ var artists []student.Artist
 var locations student.Locations
 var dates student.Dates
 var relation student.Relation
+var ArrG []Data
 
 type Data struct {
 	ActorsID      int
@@ -54,8 +55,6 @@ type Result struct {
 }
 
 func init() {
-	indexTpl = template.Must(template.ParseGlob("static/templates/index/*.html"))
-	tpl404 = template.Must(template.ParseGlob("static/templates/404/*.html"))
 	var wg sync.WaitGroup
 	SendRequest(student.API_LINK)
 	wg.Add(4)
@@ -83,18 +82,64 @@ func init() {
 }
 
 func main() {
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/favicon.ico", faviconHandler)
-	http.HandleFunc("/", index)
+	router := http.NewServeMux()
+
+	router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	router.HandleFunc("/favicon.ico", faviconHandler)
+	router.HandleFunc("/get-actors", getActors)
+	router.HandleFunc("/find", findFunc)
+	router.HandleFunc("/", index)
 
 	t := time.Now()
 	fmt.Println(t.Format("3:4:5pm"), "Starting server, go to localhost:8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":8080", router); err != nil {
 		log.Fatal(err)
 	}
 }
 
+func findFunc(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		// var res []int
+		// for _, art := range artists {
+		// 	if strings.Contains(art.Name, r.FormValue("search")) {
+		// 		res = append(res, art.ID)
+		// 	}
+		// }
+		b, err := json.Marshal(ArrG)
+		if err != nil {
+			fmt.Println(err)
+		}
+		w.Write(b)
+	}
+}
+
+func getActors(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		amount, err := strconv.Atoi(r.FormValue("fname"))
+		if err != nil {
+			amount = 9
+			fmt.Println("Error:", err)
+		}
+		Arr := createResponse(amount)
+		result := Result{
+			DataArr: Arr,
+		}
+		b, err1 := json.Marshal(result)
+		if err1 != nil {
+			fmt.Println(err)
+		}
+		w.Write(b)
+	default:
+		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+		break
+	}
+}
+
 func index(w http.ResponseWriter, r *http.Request) {
+	indexTpl = template.Must(template.ParseGlob("static/templates/index/*.html"))
+	tpl404 = template.Must(template.ParseGlob("static/templates/404/*.html"))
 	if r.URL.Path != "/" {
 		data404 := Data{
 			ErrorCode: 404,
@@ -111,19 +156,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 			DataArr: Arr,
 		}
 		indexTpl.ExecuteTemplate(w, "index.html", result)
-		break
-	case "POST":
-		amount, err := strconv.Atoi(r.FormValue("fname"))
-		if err != nil {
-			amount = 9
-			fmt.Println("Error:", err)
-		}
-		Arr := createResponse(amount)
-		result := Result{
-			DataArr: Arr,
-		}
-		indexTpl.ExecuteTemplate(w, "index.html", result)
-		break
 	default:
 		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
 		break
@@ -164,6 +196,7 @@ func createResponse(num int) []Data {
 		}
 		Arr = append(Arr, data)
 	}
+	ArrG = Arr
 	return Arr
 }
 
