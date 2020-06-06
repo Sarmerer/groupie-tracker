@@ -1,5 +1,8 @@
-var response = null
-updateCards(9)
+var response = null;
+var LocationsG = null;
+var LocationsGroupLinkG = null;
+var LocationsGroupCountG = null;
+updateCards(9);
 
 function updateCards(amount) {
     $(document).ready(function () {
@@ -44,16 +47,52 @@ function updateCards(amount) {
 }
 
 function openModal(modalReference) {
-    console.log(modalReference);
-    
-    var target = 0
-    $('#modal').modal('toggle');
-    $('#modal').modal('show');
+
+    var target = -1
     for (var i = 0; i < $('#range-slider').val(); i++) {
         if (response.DataArr[i].ActorsID === modalReference) {
             target = i
             break
         }
+    }
+    if (target < 1) {
+        $(document).ready(function () {
+            var name = ""
+            var image = ""
+            var creationDate = 0
+            var firstAlbum = 0
+            var members = "<br>"
+            var id = 0
+            return $.ajax({
+                type: "POST",
+                url: '/get-actors',
+                dataType: "json",
+                data: {
+                    "exactFname": modalReference - 1
+                },
+                traditional: true,
+
+                success: function (data) {
+                    var concertDates = ""
+                    $.each(data.DataArr[0].RelationStruct, function (key, value) {
+                        concertDates += key + "<br>"
+                        $.each(value, function (index, date) {
+                            concertDates += date + "<br>"
+                        });
+                        concertDates += "<br>"
+                    });
+                    $('#modal').modal('toggle');
+                    $('#modal').modal('show');
+                    $('#modal .modal-body').html(concertDates);
+                    $('#modal .modal-title').text(data.DataArr[0].Name);
+                    $('#modal-img').attr("src", data.DataArr[0].Image);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('500 Internal server error')
+                }
+            });
+        });
+        return;
     }
     var concertDates = ""
     $.each(response.DataArr[target].RelationStruct, function (key, value) {
@@ -63,6 +102,8 @@ function openModal(modalReference) {
         });
         concertDates += "<br>"
     });
+    $('#modal').modal('toggle');
+    $('#modal').modal('show');
     $('#modal .modal-body').html(concertDates);
     $('#modal .modal-title').text(response.DataArr[target].Name);
     $('#modal-img').attr("src", response.DataArr[target].Image);
@@ -78,13 +119,6 @@ slider.onmouseup = function () {
     updateCards(slider.value)
 }
 
-// $("#search").focusout(function () {
-//     $('#myUL').hide();
-// });
-// $("#search").focusin(function () {
-//     $('#myUL').show();
-// });
-
 $('#search').on('input', function (e) {
     if ($('#search').val() != "") {
         return $.ajax({
@@ -97,6 +131,9 @@ $('#search').on('input', function (e) {
             traditional: true,
 
             success: function (data) {
+                LocationsGroupCount = data.Locations;
+                LocationsGroupLinkG = data.LocationsGroupLink;
+                LocationsGroupCountG = data.LocationsGroupCount;
                 console.clear();
                 $('#myUL').empty();
                 $.each(data.FoundArtists, function (index, value) {
@@ -106,10 +143,12 @@ $('#search').on('input', function (e) {
                     $('#myUL').append("<li onclick='openModal(" + data.MemberGroupIDs[index] + ")'>" + value + " - Member of " + data.MemberGroup[index] + "</li>");
                 });
                 $.each(data.CreationDates, function (index, value) {
-                    $('#myUL').append("<li>" + value + " - " + data.DatesGroupLink[index] + " group created" + "</li>");
+                    $('#myUL').append("<li onclick='openModal(" + data.DatesGroupIDs[index] + ")'>" + value + " - " + data.DatesGroupLink[index] + " group created" + "</li>");
                 });
+                var currID = 1
                 $.each(data.LocationsGroupCount, function (index, value) {
-                    $('#myUL').append("<li>" + data.LocationsGroupCount[index] + " groups were in " + data.Locations[index] + "</li>");
+                    $('#myUL').append(" <li id='" + currID + "' onclick=expandList(" + '"' + data.Locations[index] + '"' + ',' + currID + ")>" + data.LocationsGroupCount[index] + " groups were in " + data.Locations[index] + "</li> ");
+                    currID++
                 });
                 console.log(data);
             },
@@ -121,3 +160,15 @@ $('#search').on('input', function (e) {
         $('#myUL').empty();
     }
 });
+var toggle = false
+
+function expandList(loc, id) {
+    console.log(loc, id);
+    if (!toggle) {
+        $("#" + id).append(" <ul id='expand'> <li>Чебурашка</li> <li>Крокодил Гена</li> <li>Шапокляк</li> </ul>");
+        toggle = true
+    } else {
+        $("#" + id).find("ul").remove();
+        toggle = false
+    }
+}

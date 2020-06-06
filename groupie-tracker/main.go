@@ -26,7 +26,6 @@ var artists []student.Artist
 var locations student.Locations
 var dates student.Dates
 var relation student.Relation
-var ArrG []Data
 
 type Data struct {
 	ActorsID      int
@@ -101,24 +100,7 @@ func main() {
 func findFunc(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		res := struct {
-			ResType         []string
-			FoundArtists    []student.Artist
-			FoundArtistsIDs []int
-
-			FoundMembers   []string
-			MemberGroup    []string
-			MemberGroupIDs []int
-
-			CreationDates  []int
-			DatesGroupLink []string
-			DatesGroupIDs  []int
-
-			Locations           []string
-			LocationsGroupCount []int
-			LocationsGroupLink  []string
-			LocationsGroupIDs   []int
-		}{}
+		res := student.SearchResponse{}
 
 		searchingFor := strings.ToLower(r.FormValue("search"))
 
@@ -175,12 +157,17 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 func getActors(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
+		exactPerson := -1
 		amount, err := strconv.Atoi(r.FormValue("fname"))
+		tmp, atoiErr := strconv.Atoi(r.FormValue("exactFname"))
+
 		if err != nil {
 			amount = 9
-			fmt.Println("Error:", err)
 		}
-		Arr := createResponse(amount)
+		if atoiErr == nil {
+			exactPerson = tmp
+		}
+		Arr := createResponse(amount, exactPerson)
 		result := Result{
 			DataArr: Arr,
 		}
@@ -220,9 +207,34 @@ func faviconHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/assets/favicon.ico")
 }
 
-func createResponse(num int) []Data {
-	persons := randomNums(num)
+func createResponse(num, exactPers int) []Data {
 	var Arr []Data
+
+	if exactPers >= 0 {
+		data := Data{
+			ActorsID:     artists[exactPers].ID,
+			Image:        artists[exactPers].Image,
+			Name:         artists[exactPers].Name,
+			Members:      artists[exactPers].Members,
+			CreationDate: artists[exactPers].CreationDate,
+			//FirstAlbum:    myDate.Format("01/02/2006"),
+			LocationsLink: artists[exactPers].Locations,
+			ConcertDates:  artists[exactPers].ConcertDates,
+			Relations:     artists[exactPers].Relations,
+
+			Locations:      locations.IndexL[exactPers].Locations,
+			LocationsDates: locations.IndexL[exactPers].Dates,
+
+			Dates:          dates.IndexD[exactPers].Dates,
+			RelationStruct: relation.IndexR[exactPers].DatesLocations,
+
+			SliderInput: num,
+			JSONLen:     len(artists),
+		}
+		Arr = append(Arr, data)
+		return Arr
+	}
+	persons := randomNums(num)
 	for _, pers := range persons {
 		myDate, err := time.Parse("02-01-2006 15:04", artists[pers].FirstAlbum+" 04:35")
 		if err != nil {
@@ -249,8 +261,8 @@ func createResponse(num int) []Data {
 			JSONLen:     len(artists),
 		}
 		Arr = append(Arr, data)
+
 	}
-	ArrG = Arr
 	return Arr
 }
 

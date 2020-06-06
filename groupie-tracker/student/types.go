@@ -48,3 +48,22 @@ type IndexR struct {
 }
 
 type M map[string][]string
+
+type SearchResponse struct {
+	ResType         []string
+	FoundArtists    []Artist
+	FoundArtistsIDs []int
+
+	FoundMembers   []string
+	MemberGroup    []string
+	MemberGroupIDs []int
+
+	CreationDates  []int
+	DatesGroupLink []string
+	DatesGroupIDs  []int
+
+	Locations           []string
+	LocationsGroupCount []int
+	LocationsGroupLink  []string
+	LocationsGroupIDs   []int
+}
