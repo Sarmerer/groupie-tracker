@@ -4,6 +4,8 @@ var LocationsGroupLinkG = null;
 var LocationsGroupCountG = null;
 updateCards(9);
 
+//TODO: create function for ajax request
+
 function updateCards(amount) {
     $(document).ready(function () {
         var name = ""

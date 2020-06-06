@@ -55,6 +55,7 @@ type Result struct {
 }
 
 func init() {
+	//parse api and save everthing into the struct
 	var wg sync.WaitGroup
 	SendRequest(student.API_LINK)
 	wg.Add(4)
@@ -102,15 +103,18 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		res := student.SearchResponse{}
 
+		//convert everything to lower case to ease search algorithm
 		searchingFor := strings.ToLower(r.FormValue("search"))
 
 		for _, art := range artists {
+			//search for artists by the group name
 			if strings.Contains(strings.ToLower(art.Name), searchingFor) {
 
 				res.FoundArtists = append(res.FoundArtists, art)
 				res.FoundArtistsIDs = append(res.FoundArtistsIDs, art.ID)
 				res.ResType = append(res.ResType, "group")
 
+				//search for creatin dates
 			} else if strings.Contains(strconv.Itoa(art.CreationDate), searchingFor) {
 
 				res.DatesGroupLink = append(res.DatesGroupLink, art.Name)
@@ -118,6 +122,7 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 				res.DatesGroupIDs = append(res.DatesGroupIDs, art.ID)
 				res.ResType = append(res.ResType, "date")
 			}
+			//search for members
 			for _, member := range art.Members {
 
 				if strings.Contains(strings.ToLower(member), searchingFor) {
@@ -129,6 +134,10 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 			var found = false
+			//search for locations
+			//
+			//TODO: optimase the output data
+			//
 			for _, location := range locations.IndexL[art.ID-1].Locations {
 				if strings.Contains(strings.ToLower(location), searchingFor) {
 					res.LocationsGroupLink = append(res.LocationsGroupLink, art.Name)
@@ -154,6 +163,7 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//function that being called when page is reloaded, or search result is clicked
 func getActors(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
@@ -164,6 +174,7 @@ func getActors(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			amount = 9
 		}
+		//determine if request want several cards, or just exacat one
 		if atoiErr == nil {
 			exactPerson = tmp
 		}
@@ -209,32 +220,14 @@ func faviconHandler(w http.ResponseWriter, r *http.Request) {
 
 func createResponse(num, exactPers int) []Data {
 	var Arr []Data
+	var persons []int
 
 	if exactPers >= 0 {
-		data := Data{
-			ActorsID:     artists[exactPers].ID,
-			Image:        artists[exactPers].Image,
-			Name:         artists[exactPers].Name,
-			Members:      artists[exactPers].Members,
-			CreationDate: artists[exactPers].CreationDate,
-			//FirstAlbum:    myDate.Format("01/02/2006"),
-			LocationsLink: artists[exactPers].Locations,
-			ConcertDates:  artists[exactPers].ConcertDates,
-			Relations:     artists[exactPers].Relations,
-
-			Locations:      locations.IndexL[exactPers].Locations,
-			LocationsDates: locations.IndexL[exactPers].Dates,
-
-			Dates:          dates.IndexD[exactPers].Dates,
-			RelationStruct: relation.IndexR[exactPers].DatesLocations,
-
-			SliderInput: num,
-			JSONLen:     len(artists),
-		}
-		Arr = append(Arr, data)
-		return Arr
+		persons = append(persons, exactPers)
+	} else {
+		persons = randomNums(num)
 	}
-	persons := randomNums(num)
+
 	for _, pers := range persons {
 		myDate, err := time.Parse("02-01-2006 15:04", artists[pers].FirstAlbum+" 04:35")
 		if err != nil {
