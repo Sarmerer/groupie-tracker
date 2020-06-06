@@ -1,7 +1,7 @@
 var response = null
 updateCards(9)
 
-function updateCards(amount){
+function updateCards(amount) {
     $(document).ready(function () {
         var name = ""
         var image = ""
@@ -17,10 +17,12 @@ function updateCards(amount){
                 "fname": amount
             },
             traditional: true,
-    
+
             success: function (data) {
                 $('#container').empty();
                 response = data
+                $('#range-slider').val(data.DataArr[0].SliderInput);
+                $('#fname').val(data.DataArr[0].SliderInput);
                 for (var i = 0; i < amount; i++) {
                     name = data.DataArr[i].Name;
                     image = data.DataArr[i].Image;
@@ -42,6 +44,8 @@ function updateCards(amount){
 }
 
 function openModal(modalReference) {
+    console.log(modalReference);
+    
     var target = 0
     $('#modal').modal('toggle');
     $('#modal').modal('show');
@@ -74,7 +78,14 @@ slider.onmouseup = function () {
     updateCards(slider.value)
 }
 
-function ajaxSearch() {
+// $("#search").focusout(function () {
+//     $('#myUL').hide();
+// });
+// $("#search").focusin(function () {
+//     $('#myUL').show();
+// });
+
+$('#search').on('input', function (e) {
     if ($('#search').val() != "") {
         return $.ajax({
             type: "POST",
@@ -86,12 +97,27 @@ function ajaxSearch() {
             traditional: true,
 
             success: function (data) {
+                console.clear();
+                $('#myUL').empty();
+                $.each(data.FoundArtists, function (index, value) {
+                    $('#myUL').append("<li onclick='openModal(" + data.FoundArtistsIDs[index] + ")'>" + value.Name + " - Group" + "</li>");
+                });
+                $.each(data.FoundMembers, function (index, value) {
+                    $('#myUL').append("<li onclick='openModal(" + data.MemberGroupIDs[index] + ")'>" + value + " - Member of " + data.MemberGroup[index] + "</li>");
+                });
+                $.each(data.CreationDates, function (index, value) {
+                    $('#myUL').append("<li>" + value + " - " + data.DatesGroupLink[index] + " group created" + "</li>");
+                });
+                $.each(data.LocationsGroupCount, function (index, value) {
+                    $('#myUL').append("<li>" + data.LocationsGroupCount[index] + " groups were in " + data.Locations[index] + "</li>");
+                });
                 console.log(data);
-
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert('500 Internal server error')
             }
         });
+    } else {
+        $('#myUL').empty();
     }
-}
+});

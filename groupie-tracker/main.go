@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 	"text/template"
 	"time"
@@ -100,13 +101,70 @@ func main() {
 func findFunc(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		// var res []int
-		// for _, art := range artists {
-		// 	if strings.Contains(art.Name, r.FormValue("search")) {
-		// 		res = append(res, art.ID)
-		// 	}
-		// }
-		b, err := json.Marshal(ArrG)
+		res := struct {
+			ResType         []string
+			FoundArtists    []student.Artist
+			FoundArtistsIDs []int
+
+			FoundMembers   []string
+			MemberGroup    []string
+			MemberGroupIDs []int
+
+			CreationDates  []int
+			DatesGroupLink []string
+			DatesGroupIDs  []int
+
+			Locations           []string
+			LocationsGroupCount []int
+			LocationsGroupLink  []string
+			LocationsGroupIDs   []int
+		}{}
+
+		searchingFor := strings.ToLower(r.FormValue("search"))
+
+		for _, art := range artists {
+			if strings.Contains(strings.ToLower(art.Name), searchingFor) {
+
+				res.FoundArtists = append(res.FoundArtists, art)
+				res.FoundArtistsIDs = append(res.FoundArtistsIDs, art.ID)
+				res.ResType = append(res.ResType, "group")
+
+			} else if strings.Contains(strconv.Itoa(art.CreationDate), searchingFor) {
+
+				res.DatesGroupLink = append(res.DatesGroupLink, art.Name)
+				res.CreationDates = append(res.CreationDates, art.CreationDate)
+				res.DatesGroupIDs = append(res.DatesGroupIDs, art.ID)
+				res.ResType = append(res.ResType, "date")
+			}
+			for _, member := range art.Members {
+
+				if strings.Contains(strings.ToLower(member), searchingFor) {
+					res.MemberGroup = append(res.MemberGroup, art.Name)
+					res.FoundMembers = append(res.FoundMembers, member)
+					res.MemberGroupIDs = append(res.MemberGroupIDs, art.ID)
+					res.ResType = append(res.ResType, "member")
+
+				}
+			}
+			var found = false
+			for _, location := range locations.IndexL[art.ID-1].Locations {
+				if strings.Contains(strings.ToLower(location), searchingFor) {
+					res.LocationsGroupLink = append(res.LocationsGroupLink, art.Name)
+					res.LocationsGroupIDs = append(res.LocationsGroupIDs, art.ID)
+					for index, loc := range res.Locations {
+						if location == loc {
+							res.LocationsGroupCount[index]++
+							found = true
+						}
+					}
+					if !found {
+						res.Locations = append(res.Locations, location)
+						res.LocationsGroupCount = append(res.LocationsGroupCount, 1)
+					}
+				}
+			}
+		}
+		b, err := json.Marshal(res)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -151,11 +209,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		Arr := createResponse(9)
-		result := Result{
-			DataArr: Arr,
-		}
-		indexTpl.ExecuteTemplate(w, "index.html", result)
+		indexTpl.ExecuteTemplate(w, "index.html", nil)
 	default:
 		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
 		break
