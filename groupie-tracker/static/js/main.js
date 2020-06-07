@@ -39,7 +39,28 @@ function updateCards(amount) {
                         $.each(value.Members, function (index, value) {
                             members += value + "<br>"
                         });
-                        $('#container').append(" <div class='card' onclick='openModal(" + id + ")' id='" + id + "'> <div class='img-overlay'> <img src='" + image + "'></img> <div class='img-text'>" + creationDate + "</div> </div> <div class='info'> <h2> <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/" + id + "'>" + name + "</a></h2> <div class='title'>1<sup>st</sup> album: " + firstAlbum + "</div> <div class='desc'> <p>" + members + "</p> </div> </div> <div class='actions'> <div class='overlay'></div> <div class='heart-container'> <img src='/static/assets/round_date_range_white_18dp.png' class='my-icon'> </div> </div> </div>").hide().slideDown('slow');
+                        $('#container').append(`
+                        <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
+                            <div class='img-overlay'> 
+                                <img src='` + image + `'></img>
+                                    <div class='img-text'>` + creationDate + `</div>
+                            </div>
+                            <div class='info'>
+                                 <h2>
+                                    <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + name + `</a>
+                                </h2> 
+                                    <div class='title'>1<sup>st</sup> album: ` + firstAlbum + `</div>
+                            <div class='desc'>
+                                <p>` + members + `</p>
+                            </div>
+                        </div>
+                        <div class='actions'>
+                            <div class='overlay'></div>
+                                <div class='heart-container'>
+                                    <img src='/static/assets/round_date_range_white_18dp.png' class='my-icon'>
+                                </div>
+                            </div>
+                        </div>`).hide().slideDown('slow');
                         members = "<br>"
                     });
                 },
@@ -128,7 +149,32 @@ $('#search').on('input', function (e) {
                     $.each(value.Members, function (index, value) {
                         members += value + "<br>"
                     });
-                    $('#container').append(" <div class='card' onclick='openModal(" + id + ")' id='" + id + "'> <div class='img-overlay'> <img src='" + image + "'></img> <div class='img-text'>" + creationDate + "</div> </div> <div class='info'> <h2> <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/" + id + "'>" + name + "</a></h2> <div class='title'>1<sup>st</sup> album: " + firstAlbum + "</div> <div class='desc'> <p>" + members + "</p> </div> </div> <div class='actions'> <div class='overlay'></div> <div class='heart-container'> <img src='/static/assets/round_date_range_white_18dp.png' class='my-icon'> </div> </div> </div> ").hide().fadeIn('fast')
+                    $('#container').append(`
+                    <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
+                        <div class='img-overlay'>
+                            <img src='` + image + `'></img>
+                                <div class='img-text'>
+                                    ` + creationDate + `
+                                </div>
+                        </div>
+                        <div class='info'>
+                            <h2>
+                                <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + name + `</a>
+                            </h2>
+                            <div class='title'>
+                                1<sup>st</sup> album: ` + firstAlbum + `
+                            </div>
+                            <div class='desc'>
+                                <p>` + members + `</p>
+                            </div>
+                        </div>
+                        <div class='actions'>
+                            <div class='overlay'></div>
+                                <div class='heart-container'>
+                                    <img src='/static/assets/round_date_range_white_18dp.png' class='my-icon'>
+                                </div>
+                        </div>
+                    </div>`).hide().fadeIn('fast')
                     members = "<br>"
                 });
             },
