@@ -89,6 +89,14 @@ h2 {
     transition: all 200ms ease-out;
 }
 
+.card-placeholder{
+    color: lawngreen;
+    width: 20px;
+    height: 100px;
+    background: red;
+}
+
+
 img {
     height: auto;
     object-fit: contain;
@@ -109,6 +117,21 @@ img {
     right: 0px;
     background-color: rgb(27, 27, 27, 0.6);
     padding: 3px 40px 3px 8px;
+}
+
+.card-overlay {
+    position: relative;
+}
+
+.card-bookmark {
+    z-index: 1;
+    position: absolute;
+    top: 0px;
+    left: 25px;
+    background-color: rgb(185, 0, 0);
+    padding: 10px 3px 10px 3px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
 }
 
 .card:hover {

@@ -101,51 +101,51 @@ func main() {
 func findFunc(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		res := student.SearchResponse{}
 
+		var dataArr []Data
+		var data Data
 		//convert everything to lower case to ease search algorithm
 		searchingFor := strings.ToLower(r.FormValue("search"))
 
-		for _, art := range artists {
+		for pers, art := range artists {
 			//search for artists by the group name
 			if strings.Contains(strings.ToLower(art.Name), searchingFor) {
-
-				res.FoundArtists = append(res.FoundArtists, art)
-				res.FoundArtistsIDs = append(res.FoundArtistsIDs, art.ID)
-				res.ResType = append(res.ResType, "group")
-
+				data = appendStruct(pers)
+				dataArr = append(dataArr, data)
 				//search for creatin dates
 			} else if strings.Contains(strconv.Itoa(art.CreationDate), searchingFor) {
-
-				res.DatesGroupLink = append(res.DatesGroupLink, art.Name)
-				res.CreationDates = append(res.CreationDates, art.CreationDate)
-				res.DatesGroupIDs = append(res.DatesGroupIDs, art.ID)
-				res.ResType = append(res.ResType, "date")
+				data = appendStruct(pers)
+				dataArr = append(dataArr, data)
+			} else {
+				myDate, _ := time.Parse("02-01-2006 15:04", art.FirstAlbum+" 04:35")
+				if strings.Contains(myDate.Format("02/01/2006"), searchingFor) {
+					data = appendStruct(pers)
+					dataArr = append(dataArr, data)
+				}
 			}
 			//search for members
 			for _, member := range art.Members {
 
 				if strings.Contains(strings.ToLower(member), searchingFor) {
-					res.MemberGroup = append(res.MemberGroup, art.Name)
-					res.FoundMembers = append(res.FoundMembers, member)
-					res.MemberGroupIDs = append(res.MemberGroupIDs, art.ID)
-					res.ResType = append(res.ResType, "member")
-
+					data = appendStruct(pers)
+					dataArr = append(dataArr, data)
 				}
 			}
 			//search for locations
 			//
 			//TODO: optimase the output data
 			//
-			for index, location := range locations.IndexL[art.ID-1].Locations {
+			for _, location := range locations.IndexL[art.ID-1].Locations {
 				if strings.Contains(strings.ToLower(location), searchingFor) {
-					res.Locations = append(res.Locations, location)
-					res.LocationsGroupLink = append(res.LocationsGroupLink, artists[index].Name)
-					res.LocationsGroupIDs = append(res.LocationsGroupIDs, art.ID)
+					data = appendStruct(pers)
+					dataArr = append(dataArr, data)
 				}
 			}
 		}
-		b, err := json.Marshal(res)
+		result := Result{
+			DataArr: dataArr,
+		}
+		b, err := json.Marshal(result)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -165,7 +165,7 @@ func getActors(w http.ResponseWriter, r *http.Request) {
 			amount = 9
 		}
 		//determine if request want several cards, or just exacat one
-		if atoiErr == nil {
+		if atoiErr == nil && tmp >= 0 {
 			exactPerson = tmp
 		}
 		Arr := createResponse(amount, exactPerson)
@@ -219,34 +219,37 @@ func createResponse(num, exactPers int) []Data {
 	}
 
 	for _, pers := range persons {
-		myDate, err := time.Parse("02-01-2006 15:04", artists[pers].FirstAlbum+" 04:35")
-		if err != nil {
-			panic(err)
-		}
-		data := Data{
-			ActorsID:      artists[pers].ID,
-			Image:         artists[pers].Image,
-			Name:          artists[pers].Name,
-			Members:       artists[pers].Members,
-			CreationDate:  artists[pers].CreationDate,
-			FirstAlbum:    myDate.Format("01/02/2006"),
-			LocationsLink: artists[pers].Locations,
-			ConcertDates:  artists[pers].ConcertDates,
-			Relations:     artists[pers].Relations,
-
-			Locations:      locations.IndexL[pers].Locations,
-			LocationsDates: locations.IndexL[pers].Dates,
-
-			Dates:          dates.IndexD[pers].Dates,
-			RelationStruct: relation.IndexR[pers].DatesLocations,
-
-			SliderInput: num,
-			JSONLen:     len(artists),
-		}
+		data := appendStruct(pers)
 		Arr = append(Arr, data)
-
 	}
 	return Arr
+}
+
+func appendStruct(pers int) Data {
+	myDate, err := time.Parse("02-01-2006 15:04", artists[pers].FirstAlbum+" 04:35")
+	if err != nil {
+		panic(err)
+	}
+	data := Data{
+		ActorsID:      artists[pers].ID,
+		Image:         artists[pers].Image,
+		Name:          artists[pers].Name,
+		Members:       artists[pers].Members,
+		CreationDate:  artists[pers].CreationDate,
+		FirstAlbum:    myDate.Format("02/01/2006"),
+		LocationsLink: artists[pers].Locations,
+		ConcertDates:  artists[pers].ConcertDates,
+		Relations:     artists[pers].Relations,
+
+		Locations:      locations.IndexL[pers].Locations,
+		LocationsDates: locations.IndexL[pers].Dates,
+
+		Dates:          dates.IndexD[pers].Dates,
+		RelationStruct: relation.IndexR[pers].DatesLocations,
+
+		JSONLen: len(artists),
+	}
+	return data
 }
 
 func SendRequest(link string) {
