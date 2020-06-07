@@ -133,25 +133,15 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 
 				}
 			}
-			var found = false
 			//search for locations
 			//
 			//TODO: optimase the output data
 			//
-			for _, location := range locations.IndexL[art.ID-1].Locations {
+			for index, location := range locations.IndexL[art.ID-1].Locations {
 				if strings.Contains(strings.ToLower(location), searchingFor) {
-					res.LocationsGroupLink = append(res.LocationsGroupLink, art.Name)
+					res.Locations = append(res.Locations, location)
+					res.LocationsGroupLink = append(res.LocationsGroupLink, artists[index].Name)
 					res.LocationsGroupIDs = append(res.LocationsGroupIDs, art.ID)
-					for index, loc := range res.Locations {
-						if location == loc {
-							res.LocationsGroupCount[index]++
-							found = true
-						}
-					}
-					if !found {
-						res.Locations = append(res.Locations, location)
-						res.LocationsGroupCount = append(res.LocationsGroupCount, 1)
-					}
 				}
 			}
 		}

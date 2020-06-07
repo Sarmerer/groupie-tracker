@@ -1,10 +1,14 @@
 var response = null;
-var LocationsG = null;
-var LocationsGroupLinkG = null;
-var LocationsGroupCountG = null;
+var exactPerson = null;
 updateCards(9);
 
 //TODO: create function for ajax request
+
+$(document).ready(function () {
+    $("#modal").find("#modal-body").show()
+    $("#modal").find("#modal-body-members").hide()
+});
+
 
 function updateCards(amount) {
     $(document).ready(function () {
@@ -56,15 +60,10 @@ function openModal(modalReference) {
             target = i
             break
         }
-    }
-    if (target < 1) {
+    };
+
+    if (target < 0) {
         $(document).ready(function () {
-            var name = ""
-            var image = ""
-            var creationDate = 0
-            var firstAlbum = 0
-            var members = "<br>"
-            var id = 0
             return $.ajax({
                 type: "POST",
                 url: '/get-actors',
@@ -75,40 +74,51 @@ function openModal(modalReference) {
                 traditional: true,
 
                 success: function (data) {
-                    var concertDates = ""
-                    $.each(data.DataArr[0].RelationStruct, function (key, value) {
-                        concertDates += key + "<br>"
-                        $.each(value, function (index, date) {
-                            concertDates += date + "<br>"
-                        });
-                        concertDates += "<br>"
-                    });
-                    $('#modal').modal('toggle');
-                    $('#modal').modal('show');
-                    $('#modal .modal-body').html(concertDates);
-                    $('#modal .modal-title').text(data.DataArr[0].Name);
-                    $('#modal-img').attr("src", data.DataArr[0].Image);
+                    exactPerson = data;
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     alert('500 Internal server error')
                 }
             });
         });
-        return;
     }
+    var currPers = null
     var concertDates = ""
-    $.each(response.DataArr[target].RelationStruct, function (key, value) {
+    var membersList = ""
+    if (exactPerson != null){
+        currPers = exactPerson
+        target = 0
+    }else{
+        currPers = response;
+    }
+    console.log(currPers.DataArr[target].RelationStruct);
+    
+    $.each(currPers.DataArr[target].RelationStruct, function (key, value) {
         concertDates += key + "<br>"
         $.each(value, function (index, date) {
             concertDates += date + "<br>"
         });
         concertDates += "<br>"
     });
+    $.each(currPers.DataArr[target].Members, function (key, value) {
+        membersList += value + "<br>"
+    });
+
     $('#modal').modal('toggle');
     $('#modal').modal('show');
-    $('#modal .modal-body').html(concertDates);
-    $('#modal .modal-title').text(response.DataArr[target].Name);
-    $('#modal-img').attr("src", response.DataArr[target].Image);
+    $('#modal').find("#modal-body").html(concertDates);
+    $('#modal').find("#modal-body-members").html(membersList);
+    $('#modal .modal-title').text(currPers.DataArr[target].Name);
+    $('#modal-img').attr("src", currPers.DataArr[target].Image);
+    $("#switch-modal-footer").click(function () {
+        if ($("#modal").find("#modal-body").is(":visible")) {
+            $("#modal").find("#modal-body").hide()
+            $("#modal").find("#modal-body-members").show()
+        } else {
+            $("#modal").find("#modal-body").show()
+            $("#modal").find("#modal-body-members").hide()
+        }
+    });
 }
 
 var slider = document.getElementById("range-slider");
@@ -133,9 +143,6 @@ $('#search').on('input', function (e) {
             traditional: true,
 
             success: function (data) {
-                LocationsGroupCount = data.Locations;
-                LocationsGroupLinkG = data.LocationsGroupLink;
-                LocationsGroupCountG = data.LocationsGroupCount;
                 console.clear();
                 $('#myUL').empty();
                 $.each(data.FoundArtists, function (index, value) {
@@ -147,10 +154,10 @@ $('#search').on('input', function (e) {
                 $.each(data.CreationDates, function (index, value) {
                     $('#myUL').append("<li onclick='openModal(" + data.DatesGroupIDs[index] + ")'>" + value + " - " + data.DatesGroupLink[index] + " group created" + "</li>");
                 });
-                var currID = 1
-                $.each(data.LocationsGroupCount, function (index, value) {
-                    $('#myUL').append(" <li id='" + currID + "' onclick=expandList(" + '"' + data.Locations[index] + '"' + ',' + currID + ")>" + data.LocationsGroupCount[index] + " groups were in " + data.Locations[index] + "</li> ");
-                    currID++
+                $.each(data.Locations, function (index, value) {
+                    if (!($('#myUL').find("#" + data.LocationsGroupLink[index]).length)) {
+                        $('#myUL').append(" <li id='" + data.LocationsGroupLink[index] + "'>" + data.LocationsGroupLink[index] + " were in " + value + "</li> ");
+                    }
                 });
                 console.log(data);
             },
@@ -162,15 +169,3 @@ $('#search').on('input', function (e) {
         $('#myUL').empty();
     }
 });
-var toggle = false
-
-function expandList(loc, id) {
-    console.log(loc, id);
-    if (!toggle) {
-        $("#" + id).append(" <ul id='expand'> <li>Чебурашка</li> <li>Крокодил Гена</li> <li>Шапокляк</li> </ul>");
-        toggle = true
-    } else {
-        $("#" + id).find("ul").remove();
-        toggle = false
-    }
-}
