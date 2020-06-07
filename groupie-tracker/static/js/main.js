@@ -3,14 +3,8 @@ updateCards(9);
 
 //TODO: create function for ajax request
 
-$(document).ready(function () {
-    $("#modal").find("#modal-body").show()
-    $("#modal").find("#modal-body-members").hide()
-});
-
-
 function updateCards(amount) {
-    if (amount >= 0){
+    if (amount >= 0) {
         $(document).ready(function () {
             var name = ""
             var image = ""
@@ -26,7 +20,7 @@ function updateCards(amount) {
                     "fname": amount,
                 },
                 traditional: true,
-    
+
                 success: function (data) {
                     $('#container').empty();
                     response = data
@@ -69,7 +63,7 @@ function updateCards(amount) {
                 }
             });
         });
-    }else{
+    } else {
         alert("400 Bad request");
         return;
     }
@@ -91,6 +85,9 @@ function openModal(modalReference) {
     var concertDates = ""
     var membersList = ""
     $.each(response.DataArr[target].RelationStruct, function (key, value) {
+        key = key.replace(/-/g, ", ");
+        key = key.replace(/_/g, " ");
+        key = titleCase(key);
         concertDates += key + "<br>"
         $.each(value, function (index, date) {
             concertDates += date + "<br>"
@@ -107,15 +104,6 @@ function openModal(modalReference) {
     $('#modal').find("#modal-body-members").html(membersList);
     $('#modal .modal-title').text(response.DataArr[target].Name);
     $('#modal-img').attr("src", response.DataArr[target].Image);
-    $("#switch-modal-footer").click(function () {
-        if ($("#modal").find("#modal-body").is(":visible")) {
-            $("#modal").find("#modal-body").hide()
-            $("#modal").find("#modal-body-members").show()
-        } else {
-            $("#modal").find("#modal-body").show()
-            $("#modal").find("#modal-body-members").hide()
-        }
-    });
 }
 
 $('#search').on('input', function (e) {
@@ -126,6 +114,7 @@ $('#search').on('input', function (e) {
         var firstAlbum = 0
         var members = "<br>"
         var id = 0
+        var foundBy = ""
         return $.ajax({
             type: "POST",
             url: '/find',
@@ -145,36 +134,41 @@ $('#search').on('input', function (e) {
                     image = value.Image;
                     creationDate = value.CreationDate;
                     firstAlbum = value.FirstAlbum;
-                    id = value.ActorsID
+                    id = value.ActorsID;
+                    foundBy = value.FoundBy;
                     $.each(value.Members, function (index, value) {
                         members += value + "<br>"
                     });
-                    $('#container').append(`
-                    <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
-                        <div class='img-overlay'>
-                            <img src='` + image + `'></img>
-                                <div class='img-text'>
-                                    ` + creationDate + `
+                    if (!($('#' + id).length)) {
+                        $('#container').append(`
+                        <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
+                            <div>
+                                <div class='img-overlay'>
+                                    <img src='` + image + `'></img>
+                                        <div class='img-text'>
+                                            ` + creationDate + `
+                                        </div>
                                 </div>
-                        </div>
-                        <div class='info'>
-                            <h2>
-                                <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + name + `</a>
-                            </h2>
-                            <div class='title'>
-                                1<sup>st</sup> album: ` + firstAlbum + `
-                            </div>
-                            <div class='desc'>
-                                <p>` + members + `</p>
-                            </div>
-                        </div>
-                        <div class='actions'>
-                            <div class='overlay'></div>
-                                <div class='heart-container'>
-                                    <img src='/static/assets/round_date_range_white_18dp.png' class='my-icon'>
+                                <div class='info'>
+                                    <h2>
+                                        <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + name + `</a>
+                                    </h2>
+                                    <div class='title'>
+                                        1<sup>st</sup> album: ` + firstAlbum + `
+                                    </div>
+                                    <div class='desc'>
+                                        <p>` + members + `</p>
+                                    </div>
                                 </div>
-                        </div>
-                    </div>`).hide().fadeIn('fast')
+                                <div class='actions'>
+                                    <div class='overlay'></div>
+                                        <div class='heart-container'>
+                                            <img src='/static/assets/round_date_range_white_18dp.png' class='my-icon'>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>`).hide().fadeIn('fast')
+                    }
                     members = "<br>"
                 });
             },
@@ -187,3 +181,15 @@ $('#search').on('input', function (e) {
         updateCards(9)
     }
 });
+
+function titleCase(str) {
+    var splitStr = str.toLowerCase().split(' ');
+
+    for (var i = 0; i < splitStr.length; i++) {
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+    }
+    if (splitStr[splitStr.length - 1] === "Usa" || splitStr[splitStr.length - 1] === "Uk") {
+        splitStr[splitStr.length - 1] = splitStr[splitStr.length - 1].toUpperCase();
+    }
+    return splitStr.join(' ');
+}

@@ -44,10 +44,11 @@ type Data struct {
 	Dates          []string
 	RelationStruct student.M
 
-	ErrorCode   int
-	Error       string
-	SliderInput int
-	JSONLen     int
+	ErrorCode int
+	Error     string
+
+	FoundBy []string
+	JSONLen int
 }
 
 type Result struct {
@@ -111,15 +112,18 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 			//search for artists by the group name
 			if strings.Contains(strings.ToLower(art.Name), searchingFor) {
 				data = appendStruct(pers)
+				data.FoundBy = append(data.FoundBy, "Group name")
 				dataArr = append(dataArr, data)
 				//search for creatin dates
 			} else if strings.Contains(strconv.Itoa(art.CreationDate), searchingFor) {
 				data = appendStruct(pers)
+				data.FoundBy = append(data.FoundBy, "CreationDate")
 				dataArr = append(dataArr, data)
 			} else {
 				myDate, _ := time.Parse("02-01-2006 15:04", art.FirstAlbum+" 04:35")
 				if strings.Contains(myDate.Format("02/01/2006"), searchingFor) {
 					data = appendStruct(pers)
+					data.FoundBy = append(data.FoundBy, "First album date")
 					dataArr = append(dataArr, data)
 				}
 			}
@@ -128,6 +132,7 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 
 				if strings.Contains(strings.ToLower(member), searchingFor) {
 					data = appendStruct(pers)
+					data.FoundBy = append(data.FoundBy, "Member name")
 					dataArr = append(dataArr, data)
 				}
 			}
@@ -136,8 +141,11 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 			//TODO: optimase the output data
 			//
 			for _, location := range locations.IndexL[art.ID-1].Locations {
+				location = strings.Replace(location, "-", " ", -1)
+				location = strings.Replace(location, "_", " ", -1)
 				if strings.Contains(strings.ToLower(location), searchingFor) {
 					data = appendStruct(pers)
+					data.FoundBy = append(data.FoundBy, "Location")
 					dataArr = append(dataArr, data)
 				}
 			}
