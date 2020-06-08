@@ -14,7 +14,7 @@ function updateCards(amount) {
             var id = 0
             return $.ajax({
                 type: "POST",
-                url: '/get-actors',
+                url: '/get-artists',
                 dataType: "json",
                 data: {
                     "fname": amount,
@@ -31,7 +31,7 @@ function updateCards(amount) {
                         image = value.Image;
                         creationDate = value.CreationDate;
                         firstAlbum = value.FirstAlbum;
-                        id = value.ActorsID
+                        id = value.ArtistsID
                         $.each(value.Members, function (_, memb) {
                             members += memb + "<br>"
                         });
@@ -75,7 +75,7 @@ function openModal(modalReference) {
 
     var targetCardIndex = modalReference
     $.each(response.DataArr, function (key, value) {
-        if (value.ActorsID === modalReference) {
+        if (value.ArtisatsID === modalReference) {
             targetCardIndex = key
             return false;
         }
@@ -112,11 +112,13 @@ $('#search').on('input', function () {
     if ($('#search').val() != "") {
         var name = ""
         var image = ""
+        var foundBy = ""
+        var members = "<br>"
+
+        var id = 0
         var creationDate = 0
         var firstAlbum = 0
-        var members = "<br>"
-        var id = 0
-        var foundBy = ""
+
         return $.ajax({
             type: "POST",
             url: '/find',
@@ -135,10 +137,12 @@ $('#search').on('input', function () {
                 $.each(data.DataArr, function (_, value) {
                     name = value.Name;
                     image = value.Image;
+                    foundBy = value.FoundBy;
+
+                    id = value.ArtistsID;
                     creationDate = value.CreationDate;
                     firstAlbum = value.FirstAlbum;
-                    id = value.ActorsID;
-                    foundBy = value.FoundBy;
+
                     $.each(value.Members, function (_, value) {
                         members += value + "<br>"
                     });

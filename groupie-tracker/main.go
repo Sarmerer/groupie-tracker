@@ -28,7 +28,7 @@ var dates student.Dates
 var relation student.Relation
 
 type Data struct {
-	ActorsID      int
+	ArtistsID     int
 	Image         string
 	Name          string
 	Members       []string
@@ -88,7 +88,7 @@ func main() {
 
 	router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	router.HandleFunc("/favicon.ico", faviconHandler)
-	router.HandleFunc("/get-actors", getActors)
+	router.HandleFunc("/get-artists", getArtists)
 	router.HandleFunc("/find", findFunc)
 	router.HandleFunc("/", index)
 
@@ -114,7 +114,7 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 				data = getData(pers)
 				data.FoundBy = append(data.FoundBy, "Group name")
 				dataArr = append(dataArr, data)
-				//search for creatin dates
+				//search for creation dates
 			} else if strings.Contains(strconv.Itoa(art.CreationDate), searchingFor) {
 				data = getData(pers)
 				data.FoundBy = append(data.FoundBy, "CreationDate")
@@ -162,7 +162,7 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 }
 
 //function that being called when page is reloaded, or search result is clicked
-func getActors(w http.ResponseWriter, r *http.Request) {
+func getArtists(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 		amount, err := strconv.Atoi(r.FormValue("fname"))
@@ -228,7 +228,7 @@ func getData(pers int) Data {
 		panic(err)
 	}
 	data := Data{
-		ActorsID:      artists[pers].ID,
+		ArtistsID:     artists[pers].ID,
 		Image:         artists[pers].Image,
 		Name:          artists[pers].Name,
 		Members:       artists[pers].Members,
