@@ -105,6 +105,10 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 
 		var dataArr []Data
 		var data Data
+
+		var foundBy string
+		var currIndex int
+
 		//convert everything to lower case to ease search algorithm
 		searchingFor := strings.ToLower(r.FormValue("search"))
 
@@ -114,41 +118,63 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 				data = getData(pers)
 				data.FoundBy = append(data.FoundBy, "Group name")
 				dataArr = append(dataArr, data)
+				currIndex++
 				//search for creation dates
 			} else if strings.Contains(strconv.Itoa(art.CreationDate), searchingFor) {
 				data = getData(pers)
 				data.FoundBy = append(data.FoundBy, "CreationDate")
 				dataArr = append(dataArr, data)
+				currIndex++
 			} else {
 				myDate, _ := time.Parse("02-01-2006 15:04", art.FirstAlbum+" 04:35")
 				if strings.Contains(myDate.Format("02/01/2006"), searchingFor) {
 					data = getData(pers)
 					data.FoundBy = append(data.FoundBy, "First album date")
 					dataArr = append(dataArr, data)
+					currIndex++
 				}
 			}
 			//search for members
 			for _, member := range art.Members {
-
 				if strings.Contains(strings.ToLower(member), searchingFor) {
-					data = getData(pers)
-					data.FoundBy = append(data.FoundBy, "Member name")
-					dataArr = append(dataArr, data)
+					if len(dataArr) >= 1 {
+						if dataArr[currIndex-1].Name != art.Name {
+							data = getData(pers)
+							foundBy += "member name "
+							dataArr = append(dataArr, data)
+							currIndex++
+						}
+					} else {
+						data = getData(pers)
+						foundBy += "member name "
+						dataArr = append(dataArr, data)
+						currIndex++
+					}
 				}
+				data.FoundBy = append(data.FoundBy, foundBy)
 			}
-			//search for locations
-			//
-			//TODO: optimase the output data
-			//
+			foundBy = ""
 			for _, location := range locations.IndexL[art.ID-1].Locations {
 				location = strings.Replace(location, "-", " ", -1)
 				location = strings.Replace(location, "_", " ", -1)
 				if strings.Contains(strings.ToLower(location), searchingFor) {
-					data = getData(pers)
-					data.FoundBy = append(data.FoundBy, "Location")
-					dataArr = append(dataArr, data)
+					if len(dataArr) >= 1 {
+						if dataArr[currIndex-1].Name != art.Name {
+							data = getData(pers)
+							foundBy += "location "
+							dataArr = append(dataArr, data)
+							currIndex++
+						}
+					} else {
+						data = getData(pers)
+						dataArr = append(dataArr, data)
+						foundBy += "location "
+						currIndex++
+					}
 				}
+				data.FoundBy = append(data.FoundBy, foundBy)
 			}
+			foundBy = ""
 		}
 		result := Result{
 			DataArr: dataArr,

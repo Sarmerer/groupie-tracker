@@ -75,7 +75,7 @@ function openModal(modalReference) {
 
     var targetCardIndex = modalReference
     $.each(response.DataArr, function (key, value) {
-        if (value.ArtisatsID === modalReference) {
+        if (value.ArtistsID === modalReference) {
             targetCardIndex = key
             return false;
         }
@@ -84,6 +84,8 @@ function openModal(modalReference) {
         alert("400 Bad request");
         return
     }
+    console.log(targetCardIndex, modalReference);
+    
     var concertDates = ""
     var membersList = ""
     $.each(response.DataArr[targetCardIndex].RelationStruct, function (key, value) {
