@@ -79,6 +79,8 @@ func init() {
 
 	wg.Wait()
 
+	//TODO: move template parsing
+
 	t := time.Now()
 	fmt.Println(t.Format("3:4:5pm"), "Init complete.")
 }
@@ -89,7 +91,7 @@ func main() {
 	router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	router.HandleFunc("/favicon.ico", faviconHandler)
 	router.HandleFunc("/get-artists", getArtists)
-	router.HandleFunc("/find", findFunc)
+	router.HandleFunc("/find", findArtist)
 	router.HandleFunc("/", index)
 
 	t := time.Now()
@@ -99,7 +101,59 @@ func main() {
 	}
 }
 
-func findFunc(w http.ResponseWriter, r *http.Request) {
+func index(w http.ResponseWriter, r *http.Request) {
+	indexTpl = template.Must(template.ParseGlob("static/templates/index/*.html"))
+	tpl404 = template.Must(template.ParseGlob("static/templates/404/*.html"))
+	if r.URL.Path != "/" {
+		data404 := Data{
+			ErrorCode: 404,
+			Error:     "404 Page not found",
+		}
+		tpl404.ExecuteTemplate(w, "404.html", data404)
+		return
+	}
+
+	switch r.Method {
+	case "GET":
+		indexTpl.ExecuteTemplate(w, "index.html", nil)
+	default:
+		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+		break
+	}
+}
+
+//function that being called when page is reloaded, or search result is clicked
+func getArtists(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		amount, err := strconv.Atoi(r.FormValue("cardsAmount"))
+		if err != nil {
+			amount = 9
+		}
+
+		var dataArr []Data
+		var persons []int
+		persons = randomNums(amount)
+
+		for _, pers := range persons {
+			dataArr = append(dataArr, getData(pers))
+		}
+
+		result := Result{
+			DataArr: dataArr,
+		}
+		b, err1 := json.Marshal(result)
+		if err1 != nil {
+			fmt.Println(err)
+		}
+		w.Write(b)
+	default:
+		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+		break
+	}
+}
+
+func findArtist(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 
@@ -187,67 +241,6 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//function that being called when page is reloaded, or search result is clicked
-func getArtists(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		amount, err := strconv.Atoi(r.FormValue("fname"))
-
-		if err != nil {
-			amount = 9
-		}
-		Arr := createResponse(amount)
-		result := Result{
-			DataArr: Arr,
-		}
-		b, err1 := json.Marshal(result)
-		if err1 != nil {
-			fmt.Println(err)
-		}
-		w.Write(b)
-	default:
-		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
-		break
-	}
-}
-
-func index(w http.ResponseWriter, r *http.Request) {
-	indexTpl = template.Must(template.ParseGlob("static/templates/index/*.html"))
-	tpl404 = template.Must(template.ParseGlob("static/templates/404/*.html"))
-	if r.URL.Path != "/" {
-		data404 := Data{
-			ErrorCode: 404,
-			Error:     "404 Page not found",
-		}
-		tpl404.ExecuteTemplate(w, "404.html", data404)
-		return
-	}
-
-	switch r.Method {
-	case "GET":
-		indexTpl.ExecuteTemplate(w, "index.html", nil)
-	default:
-		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
-		break
-	}
-}
-
-func faviconHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "static/assets/favicon.ico")
-}
-
-func createResponse(num int) []Data {
-	var Arr []Data
-	var persons []int
-	persons = randomNums(num)
-
-	for _, pers := range persons {
-		data := getData(pers)
-		Arr = append(Arr, data)
-	}
-	return Arr
-}
-
 func getData(pers int) Data {
 	myDate, err := time.Parse("02-01-2006 15:04", artists[pers].FirstAlbum+" 04:35")
 	if err != nil {
@@ -326,4 +319,8 @@ func randomNums(size int) []int {
 		}
 	}
 	return res
+}
+
+func faviconHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "static/assets/favicon.ico")
 }
