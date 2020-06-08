@@ -22,16 +22,18 @@ function updateCards(amount) {
                 traditional: true,
 
                 success: function (data) {
+                    console.log(data)
+
                     $('#container').empty();
                     response = data
-                    $.each(data.DataArr, function (index, value) {
+                    $.each(data.DataArr, function (_, value) {
                         name = value.Name;
                         image = value.Image;
                         creationDate = value.CreationDate;
                         firstAlbum = value.FirstAlbum;
                         id = value.ActorsID
-                        $.each(value.Members, function (index, value) {
-                            members += value + "<br>"
+                        $.each(value.Members, function (_, memb) {
+                            members += memb + "<br>"
                         });
                         $('#container').append(`
                         <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
@@ -54,7 +56,7 @@ function updateCards(amount) {
                                     <img src='/static/assets/round_date_range_white_18dp.png' class='my-icon'>
                                 </div>
                             </div>
-                        </div>`).hide().slideDown('slow');
+                        </div>`).hide().slideDown('normal');
                         members = "<br>"
                     });
                 },
@@ -71,20 +73,20 @@ function updateCards(amount) {
 
 function openModal(modalReference) {
 
-    var target = -1
+    var targetCardIndex = modalReference
     $.each(response.DataArr, function (key, value) {
         if (value.ActorsID === modalReference) {
-            target = key
+            targetCardIndex = key
             return false;
         }
     });
-    if (target < 0) {
+    if (targetCardIndex < 0) {
         alert("400 Bad request");
         return
     }
     var concertDates = ""
     var membersList = ""
-    $.each(response.DataArr[target].RelationStruct, function (key, value) {
+    $.each(response.DataArr[targetCardIndex].RelationStruct, function (key, value) {
         key = key.replace(/-/g, ", ");
         key = key.replace(/_/g, " ");
         key = titleCase(key);
@@ -94,7 +96,7 @@ function openModal(modalReference) {
         });
         concertDates += "<br>"
     });
-    $.each(response.DataArr[target].Members, function (key, value) {
+    $.each(response.DataArr[targetCardIndex].Members, function (key, value) {
         membersList += value + "<br>"
     });
 
@@ -102,11 +104,11 @@ function openModal(modalReference) {
     $('#modal').modal('show');
     $('#modal').find("#modal-body").html(concertDates);
     $('#modal').find("#modal-body-members").html(membersList);
-    $('#modal .modal-title').text(response.DataArr[target].Name);
-    $('#modal-img').attr("src", response.DataArr[target].Image);
+    $('#modal .modal-title').text(response.DataArr[targetCardIndex].Name);
+    $('#modal-img').attr("src", response.DataArr[targetCardIndex].Image);
 }
 
-$('#search').on('input', function (e) {
+$('#search').on('input', function () {
     if ($('#search').val() != "") {
         var name = ""
         var image = ""
@@ -127,16 +129,17 @@ $('#search').on('input', function (e) {
             success: function (data) {
                 console.clear();
                 console.log(data);
+                //update response for openModal() 
                 response = data
                 $('#container').empty();
-                $.each(data.DataArr, function (index, value) {
+                $.each(data.DataArr, function (_, value) {
                     name = value.Name;
                     image = value.Image;
                     creationDate = value.CreationDate;
                     firstAlbum = value.FirstAlbum;
                     id = value.ActorsID;
                     foundBy = value.FoundBy;
-                    $.each(value.Members, function (index, value) {
+                    $.each(value.Members, function (_, value) {
                         members += value + "<br>"
                     });
                     if (!($('#' + id).length)) {

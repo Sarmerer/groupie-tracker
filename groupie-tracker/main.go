@@ -111,18 +111,18 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 		for pers, art := range artists {
 			//search for artists by the group name
 			if strings.Contains(strings.ToLower(art.Name), searchingFor) {
-				data = appendStruct(pers)
+				data = getData(pers)
 				data.FoundBy = append(data.FoundBy, "Group name")
 				dataArr = append(dataArr, data)
 				//search for creatin dates
 			} else if strings.Contains(strconv.Itoa(art.CreationDate), searchingFor) {
-				data = appendStruct(pers)
+				data = getData(pers)
 				data.FoundBy = append(data.FoundBy, "CreationDate")
 				dataArr = append(dataArr, data)
 			} else {
 				myDate, _ := time.Parse("02-01-2006 15:04", art.FirstAlbum+" 04:35")
 				if strings.Contains(myDate.Format("02/01/2006"), searchingFor) {
-					data = appendStruct(pers)
+					data = getData(pers)
 					data.FoundBy = append(data.FoundBy, "First album date")
 					dataArr = append(dataArr, data)
 				}
@@ -131,7 +131,7 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 			for _, member := range art.Members {
 
 				if strings.Contains(strings.ToLower(member), searchingFor) {
-					data = appendStruct(pers)
+					data = getData(pers)
 					data.FoundBy = append(data.FoundBy, "Member name")
 					dataArr = append(dataArr, data)
 				}
@@ -144,7 +144,7 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 				location = strings.Replace(location, "-", " ", -1)
 				location = strings.Replace(location, "_", " ", -1)
 				if strings.Contains(strings.ToLower(location), searchingFor) {
-					data = appendStruct(pers)
+					data = getData(pers)
 					data.FoundBy = append(data.FoundBy, "Location")
 					dataArr = append(dataArr, data)
 				}
@@ -165,18 +165,12 @@ func findFunc(w http.ResponseWriter, r *http.Request) {
 func getActors(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		exactPerson := -1
 		amount, err := strconv.Atoi(r.FormValue("fname"))
-		tmp, atoiErr := strconv.Atoi(r.FormValue("exactFname"))
 
 		if err != nil {
 			amount = 9
 		}
-		//determine if request want several cards, or just exacat one
-		if atoiErr == nil && tmp >= 0 {
-			exactPerson = tmp
-		}
-		Arr := createResponse(amount, exactPerson)
+		Arr := createResponse(amount)
 		result := Result{
 			DataArr: Arr,
 		}
@@ -216,24 +210,19 @@ func faviconHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/assets/favicon.ico")
 }
 
-func createResponse(num, exactPers int) []Data {
+func createResponse(num int) []Data {
 	var Arr []Data
 	var persons []int
-
-	if exactPers >= 0 {
-		persons = append(persons, exactPers)
-	} else {
-		persons = randomNums(num)
-	}
+	persons = randomNums(num)
 
 	for _, pers := range persons {
-		data := appendStruct(pers)
+		data := getData(pers)
 		Arr = append(Arr, data)
 	}
 	return Arr
 }
 
-func appendStruct(pers int) Data {
+func getData(pers int) Data {
 	myDate, err := time.Parse("02-01-2006 15:04", artists[pers].FirstAlbum+" 04:35")
 	if err != nil {
 		panic(err)
