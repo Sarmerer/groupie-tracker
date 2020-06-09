@@ -18,6 +18,46 @@ html {
     flex-wrap: wrap;
 }
 
+.search-container {
+    font-size: 30px;
+    margin: 30px 130px 0 130px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.search-container #search-icon {
+    margin-left: 5px;
+    margin-right: 10px;
+    color: #969db89f;
+    align-self: flex-end;
+}
+
+.search-container #filter {
+    margin-left: 5px;
+    margin-right: 5px;
+    color: #969db8;
+    align-self: flex-end;
+}
+
+#search {
+    outline: none;
+    width: 65%;
+    height: auto;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #969db89f;
+    text-align: center;
+}
+
+.search-container:hover #search {
+    border-bottom: 1px solid #969db8;
+}
+
+.search-container:hover #search-icon {
+    color: #969db8;
+}
+
 .modal {
     text-align: center;
 }
@@ -37,4 +77,15 @@ html {
     bottom: 0;
     width: 100%;
     z-index: 1;
+}
+
+@media (max-width: 500px) {
+    #search {
+        width: 90%;
+    }
+
+    .search-container {
+        margin: 30px 40px 0 40px;
+
+    }
 }

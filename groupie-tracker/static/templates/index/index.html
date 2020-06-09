@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/hero.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/card.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
@@ -22,7 +23,11 @@
             <h2>listen to best</h2>
         </div>
     </div>
-    <input type="text" id="search" name="search" autocomplete="off">
+    <div class="search-container">
+        <i id="search-icon" class="fa fa-search"></i>
+        <input type="text" id="search" name="search" autocomplete="off">
+        <i id="filter" class="fa fa-filter"></i>
+    </div>
     <div class="container" id="container">
     </div>
 
