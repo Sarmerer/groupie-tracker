@@ -267,12 +267,14 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 					}
 				}
 			}
-			foundBy = strings.Replace(foundBy, " ", ", ", -1)
-			foundBy = strings.Replace(foundBy, "_", " ", -1)
-			foundBy = strings.Title(foundBy)
-			data.FoundBy = append(data.FoundBy, foundBy)
-			dataArr[foundByCounter].FoundBy = data.FoundBy
-			foundByCounter++
+			if foundBy != "" {
+				foundBy = strings.Replace(foundBy, " ", ", ", -1)
+				foundBy = strings.Replace(foundBy, "_", " ", -1)
+				foundBy = strings.Title(foundBy)
+				data.FoundBy = append(data.FoundBy, foundBy)
+				dataArr[foundByCounter].FoundBy = data.FoundBy
+				foundByCounter++
+			}
 		}
 		result := Result{
 			DataArr: dataArr,
