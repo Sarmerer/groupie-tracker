@@ -160,32 +160,61 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 		var dataArr []Data
 		var data Data
 
-		var foundBy string
 		var currIndex int
+		var foundByCounter int
 
 		//convert everything to lower case to ease search algorithm
 		searchingFor := strings.ToLower(r.FormValue("search"))
 
 		for pers, art := range artists {
+
+			foundBy := ""
+
 			//search for artists by the group name
 			if strings.Contains(strings.ToLower(art.Name), searchingFor) {
 				data = getData(pers)
-				data.FoundBy = append(data.FoundBy, "Group name")
 				dataArr = append(dataArr, data)
 				currIndex++
+				foundBy += "group_name"
 				//search for creation dates
 			} else if strings.Contains(strconv.Itoa(art.CreationDate), searchingFor) {
-				data = getData(pers)
-				data.FoundBy = append(data.FoundBy, "CreationDate")
-				dataArr = append(dataArr, data)
-				currIndex++
+				if len(dataArr) >= 1 {
+					if dataArr[currIndex-1].Name != art.Name {
+						data = getData(pers)
+						foundBy += " creation_date"
+						dataArr = append(dataArr, data)
+						currIndex++
+					} else {
+						if !strings.Contains(foundBy, " creation_date") {
+							foundBy += "creation_date"
+						}
+					}
+				} else {
+					data = getData(pers)
+					foundBy += "creation_date"
+					dataArr = append(dataArr, data)
+					currIndex++
+				}
 			} else {
 				myDate, _ := time.Parse("02-01-2006 15:04", art.FirstAlbum+" 04:35")
 				if strings.Contains(myDate.Format("02/01/2006"), searchingFor) {
-					data = getData(pers)
-					data.FoundBy = append(data.FoundBy, "First album date")
-					dataArr = append(dataArr, data)
-					currIndex++
+					if len(dataArr) >= 1 {
+						if dataArr[currIndex-1].Name != art.Name {
+							data = getData(pers)
+							foundBy += "first_album_date"
+							dataArr = append(dataArr, data)
+							currIndex++
+						} else {
+							if !strings.Contains(foundBy, "first_album_date") {
+								foundBy += " first_album_date"
+							}
+						}
+					} else {
+						data = getData(pers)
+						foundBy += "by first album date"
+						dataArr = append(dataArr, data)
+						currIndex++
+					}
 				}
 			}
 			//search for members
@@ -194,20 +223,25 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 					if len(dataArr) >= 1 {
 						if dataArr[currIndex-1].Name != art.Name {
 							data = getData(pers)
-							foundBy += "member name "
+							foundBy += "members_name"
 							dataArr = append(dataArr, data)
 							currIndex++
+						} else {
+							if !strings.Contains(foundBy, "members_name") {
+								foundBy += " members_name"
+							} else {
+								break
+							}
 						}
 					} else {
 						data = getData(pers)
-						foundBy += "member name "
+						foundBy += "members_name"
 						dataArr = append(dataArr, data)
 						currIndex++
 					}
 				}
-				data.FoundBy = append(data.FoundBy, foundBy)
 			}
-			foundBy = ""
+
 			for _, location := range locations.IndexL[art.ID-1].Locations {
 				location = strings.Replace(location, "-", " ", -1)
 				location = strings.Replace(location, "_", " ", -1)
@@ -215,20 +249,30 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 					if len(dataArr) >= 1 {
 						if dataArr[currIndex-1].Name != art.Name {
 							data = getData(pers)
-							foundBy += "location "
+							foundBy += "location"
 							dataArr = append(dataArr, data)
 							currIndex++
+						} else {
+							if !strings.Contains(foundBy, "location") {
+								foundBy += " location"
+							} else {
+								break
+							}
 						}
 					} else {
 						data = getData(pers)
 						dataArr = append(dataArr, data)
-						foundBy += "location "
+						foundBy += "location"
 						currIndex++
 					}
 				}
-				data.FoundBy = append(data.FoundBy, foundBy)
 			}
-			foundBy = ""
+			foundBy = strings.Replace(foundBy, " ", ", ", -1)
+			foundBy = strings.Replace(foundBy, "_", " ", -1)
+			foundBy = strings.Title(foundBy)
+			data.FoundBy = append(data.FoundBy, foundBy)
+			dataArr[foundByCounter].FoundBy = data.FoundBy
+			foundByCounter++
 		}
 		result := Result{
 			DataArr: dataArr,
