@@ -4,38 +4,41 @@ updateCards(9);
 //TODO: create function for ajax request
 
 function updateCards(amount) {
-    if (amount >= 0) {
-        $(document).ready(function () {
-            var name = ""
-            var image = ""
-            var creationDate = 0
-            var firstAlbum = 0
-            var members = "<br>"
-            var id = 0
-            return $.ajax({
-                type: "POST",
-                url: '/get-artists',
-                dataType: "json",
-                data: {
-                    "cardsAmount": amount,
-                },
-                traditional: true,
+    if (amount <= 0 || amount > 52) {
+        alert("400 Bad request");
+        return;
+    }
+    $(document).ready(function () {
+        var name = ""
+        var image = ""
+        var creationDate = 0
+        var firstAlbum = 0
+        var members = "<br>"
+        var id = 0
+        return $.ajax({
+            type: "POST",
+            url: '/get-artists',
+            dataType: "json",
+            data: {
+                "cardsAmount": amount,
+            },
+            traditional: true,
 
-                success: function (data) {
-                    console.log(data)
+            success: function (retrievedData) {
+                console.log(retrievedData)
 
-                    $('#container').empty();
-                    response = data
-                    $.each(data.DataArr, function (_, value) {
-                        name = value.Name;
-                        image = value.Image;
-                        creationDate = value.CreationDate;
-                        firstAlbum = value.FirstAlbum;
-                        id = value.ArtistsID
-                        $.each(value.Members, function (_, memb) {
-                            members += memb + "<br>"
-                        });
-                        $('#container').append(`
+                $('#container').empty();
+                response = retrievedData
+                $.each(retrievedData.DataArr, function (_, value) {
+                    name = value.Name;
+                    image = value.Image;
+                    creationDate = value.CreationDate;
+                    firstAlbum = value.FirstAlbum;
+                    id = value.ArtistsID
+                    $.each(value.Members, function (_, memb) {
+                        members += memb + "<br>"
+                    });
+                    $('#container').append(`
                         <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
                             <div class='img-overlay'> 
                                 <img src='` + image + `'></img>
@@ -57,18 +60,14 @@ function updateCards(amount) {
                                 </div>
                             </div>
                         </div>`).hide().slideDown('normal');
-                        members = "<br>"
-                    });
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert('500 Internal server error')
-                }
-            });
+                    members = "<br>"
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('500 Internal server error')
+            }
         });
-    } else {
-        alert("400 Bad request");
-        return;
-    }
+    });
 }
 
 function openModal(modalReference) {
@@ -85,7 +84,7 @@ function openModal(modalReference) {
         return
     }
     console.log(targetCardIndex, modalReference);
-    
+
     var concertDates = ""
     var membersList = ""
     $.each(response.DataArr[targetCardIndex].RelationStruct, function (key, value) {
@@ -130,13 +129,13 @@ $('#search').on('input', function () {
             },
             traditional: true,
 
-            success: function (data) {
+            success: function (retrievedData) {
                 console.clear();
-                console.log(data);
+                console.log(retrievedData);
                 //update response for openModal() 
-                response = data
+                response = retrievedData
                 $('#container').empty();
-                $.each(data.DataArr, function (_, value) {
+                $.each(retrievedData.DataArr, function (_, value) {
                     name = value.Name;
                     image = value.Image;
                     foundBy = value.FoundBy;
