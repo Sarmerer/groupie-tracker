@@ -52,7 +52,7 @@ function updateCards(amount) {
                         </div>
                         <div class='actions'>
                             <div class='overlay'></div>
-                                <div class='heart-container'>
+                                <div class='calendar-container'>
                                     <img src='/static/assets/round_date_range_white_18dp.png' class='my-icon'>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@ function openModal(modalReference) {
         return
     }
     console.log(targetCardIndex, modalReference);
-    
+
     var concertDates = ""
     var membersList = ""
     $.each(response.DataArr[targetCardIndex].RelationStruct, function (key, value) {
@@ -171,7 +171,7 @@ $('#search').on('input', function () {
                                 </div>
                                 <div class='actions'>
                                     <div class='overlay'></div>
-                                        <div class='heart-container'>
+                                        <div class='calendar-container'>
                                             <img src='/static/assets/round_date_range_white_18dp.png' class='my-icon'>
                                         </div>
                                 </div>

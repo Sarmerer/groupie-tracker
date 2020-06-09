@@ -1,0 +1,158 @@
+.card a {
+    text-decoration: none;
+    color: #3e3e3e !important;
+}
+
+.card h2 {
+    color: #3e3e3e;
+    font-family: Avenir;
+    font-size: 24px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.89px;
+    margin: 4px 0;
+    color: #3e3e3e !important;
+}
+
+.card {
+    cursor: default;
+    margin: 20px;
+    padding: 14px;
+    position: relative;
+    width: 250px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 23px 23px 7px rgba(0, 0, 0, 0.04);
+    background-color: #fff;
+    overflow: hidden;
+    transition: all 200ms ease-out;
+}
+
+.card-placeholder {
+    color: lawngreen;
+    width: 20px;
+    height: 100px;
+    background: red;
+}
+
+
+.card img {
+    height: auto;
+    object-fit: contain;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.img-overlay {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.img-text {
+    position: absolute;
+    bottom: 12px;
+    right: 0px;
+    background-color: rgb(27, 27, 27, 0.6);
+    padding: 3px 40px 3px 8px;
+}
+
+.card-overlay {
+    position: relative;
+}
+
+.card-bookmark {
+    z-index: 1;
+    position: absolute;
+    top: 0px;
+    left: 25px;
+    background-color: rgb(185, 0, 0);
+    padding: 10px 3px 10px 3px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    transition: all 200ms ease-out;
+}
+
+.card:hover .overlay {
+    cursor: pointer;
+    bottom: -30px;
+    right: -30px;
+    transition: all 200ms ease-out;
+}
+
+.card .info {
+    height: 35%;
+}
+
+.card .info .title {
+    color: #969db8;
+    font-family: Avenir;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.67px;
+    color: #969db8;
+}
+
+.card .info .desc {
+    color: #525252;
+    font-family: Avenir;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.44px;
+    color: #525252;
+}
+
+.card .trade {
+    height: 50px;
+    margin-top: 40px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    font-family: Avenir;
+    font-size: 14px;
+    font-weight: 900;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.44px;
+    color: #6f8a95;
+    padding: 0;
+}
+
+.card .overlay {
+    background-color: rgb(27, 27, 27);
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -120px;
+    right: -120px;
+    transition: all 200ms ease-in;
+}
+
+.actions {
+    height: 25%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.calendar-container {
+    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
