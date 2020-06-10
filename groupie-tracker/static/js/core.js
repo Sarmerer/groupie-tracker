@@ -119,7 +119,7 @@ $('#search').on('input', function () {
                 if (retrievedData.DataArr === null) {
                     $('#container').empty();
                     $('#nothing-found').show();
-                }else{
+                } else {
                     $('#nothing-found').hide();
                 }
                 console.clear();
@@ -163,6 +163,7 @@ $('#search').on('input', function () {
                                         </div>
                                 </div>
                             </div>
+                            <h5>Found by ` + foundBy + `</h5>
                         </div>`).hide().fadeIn('fast')
                     }
                 });

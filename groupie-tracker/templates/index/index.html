@@ -20,12 +20,14 @@
 </head>
 
 <body>
+
     <div id="hero" class="hero-img">
         <div class="hero-text">
             <h1>MUSIC</h1>
             <h2>listen to best</h2>
         </div>
     </div>
+
     <div id="main">
 
         <div class="search-container">
@@ -33,14 +35,17 @@
             <input type="text" id="search" name="search" autocomplete="off">
             <span onclick="openNav()"><i id="filter" class="fa fa-filter"></i></span>
         </div>
-        <div class="container" id="container">
-        </div>
+
+        <div class="container" id="container"></div>
+
         <div id="nothing-found" style="text-align: center;">
             <h2>Nothing found</h2>
         </div>
+
         {{template "side-nav"}}
         {{template "modal"}}
-        <script src="/static/js/main.js"></script>
+
+        <script src="/static/js/core.js"></script>
         <script src="/static/js/sidenav.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     </div>
