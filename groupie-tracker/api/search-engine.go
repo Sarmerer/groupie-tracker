@@ -33,23 +33,23 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 				data = getData(pers)
 				dataArr = append(dataArr, data)
 				currIndex++
-				foundBy += "group_name"
+				foundBy += "group name"
 				//search for creation dates
 			} else if strings.Contains(strconv.Itoa(art.CreationDate), searchingFor) {
 				if len(dataArr) >= 1 {
 					if dataArr[currIndex-1].Name != art.Name {
 						data = getData(pers)
-						foundBy += " creation_date"
+						foundBy += ", creation date"
 						dataArr = append(dataArr, data)
 						currIndex++
 					} else {
-						if !strings.Contains(foundBy, " creation_date") {
-							foundBy += "creation_date"
+						if !strings.Contains(foundBy, "creation date") {
+							foundBy += "creation date"
 						}
 					}
 				} else {
 					data = getData(pers)
-					foundBy += "creation_date"
+					foundBy += "creation date"
 					dataArr = append(dataArr, data)
 					currIndex++
 				}
@@ -59,17 +59,17 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 					if len(dataArr) >= 1 {
 						if dataArr[currIndex-1].Name != art.Name {
 							data = getData(pers)
-							foundBy += "first_album_date"
+							foundBy += "first album"
 							dataArr = append(dataArr, data)
 							currIndex++
 						} else {
-							if !strings.Contains(foundBy, "first_album_date") {
-								foundBy += " first_album_date"
+							if !strings.Contains(foundBy, "first album") {
+								foundBy += ", first album"
 							}
 						}
 					} else {
 						data = getData(pers)
-						foundBy += "by first album date"
+						foundBy += "by first album"
 						dataArr = append(dataArr, data)
 						currIndex++
 					}
@@ -81,19 +81,19 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 					if len(dataArr) >= 1 {
 						if dataArr[currIndex-1].Name != art.Name {
 							data = getData(pers)
-							foundBy += "members_name"
+							foundBy += "member name"
 							dataArr = append(dataArr, data)
 							currIndex++
 						} else {
-							if !strings.Contains(foundBy, "members_name") {
-								foundBy += " members_name"
+							if !strings.Contains(foundBy, "member name") {
+								foundBy += ", member name"
 							} else {
 								break
 							}
 						}
 					} else {
 						data = getData(pers)
-						foundBy += "members_name"
+						foundBy += "member name"
 						dataArr = append(dataArr, data)
 						currIndex++
 					}
@@ -112,7 +112,7 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 							currIndex++
 						} else {
 							if !strings.Contains(foundBy, "location") {
-								foundBy += " location"
+								foundBy += ", location"
 							} else {
 								break
 							}
@@ -126,9 +126,6 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 			if foundBy != "" {
-				foundBy = strings.Replace(foundBy, " ", ", ", -1)
-				foundBy = strings.Replace(foundBy, "_", " ", -1)
-				foundBy = strings.Title(foundBy)
 				data.FoundBy = append(data.FoundBy, foundBy)
 				dataArr[dataArrIndexCounter].FoundBy = data.FoundBy
 				dataArrIndexCounter++
@@ -144,5 +141,7 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 		elapsed := time.Since(tStart)
 		log.Printf("It tool %.4fs to search for %s\n", elapsed.Seconds(), searchingFor)
 		w.Write(b)
+	default:
+		fmt.Printf("Only POST method is available.")
 	}
 }

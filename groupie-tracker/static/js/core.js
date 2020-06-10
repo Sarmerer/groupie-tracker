@@ -15,7 +15,7 @@ function updateCards(amount) {
             url: '/api/get-artists',
             dataType: "json",
             data: {
-                "cardsAmount": amount,
+                "artists-amount": amount,
             },
             traditional: true,
 
