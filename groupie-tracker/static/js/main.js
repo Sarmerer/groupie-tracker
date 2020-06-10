@@ -65,7 +65,6 @@ function updateCards(amount) {
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log(errorThrown);
-                
                 alert('500 Internal server error')
             }
         });
