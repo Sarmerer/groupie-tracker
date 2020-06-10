@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -17,11 +18,11 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 		var data Data
 
 		var currIndex int
-		var foundByCounter int
 
 		//convert everything to lower case to ease search algorithm
 		searchingFor := strings.ToLower(r.FormValue("search"))
-
+		tStart := time.Now()
+		log.Println("Searh started")
 		for pers, art := range artists {
 
 			foundBy := ""
@@ -128,8 +129,7 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 				foundBy = strings.Replace(foundBy, "_", " ", -1)
 				foundBy = strings.Title(foundBy)
 				data.FoundBy = append(data.FoundBy, foundBy)
-				dataArr[foundByCounter].FoundBy = data.FoundBy
-				foundByCounter++
+				dataArr[pers].FoundBy = data.FoundBy
 			}
 		}
 		result := Result{
@@ -139,6 +139,8 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
+		elapsed := time.Since(tStart)
+		log.Printf("It tool %.4fs to search for %s\n", elapsed.Seconds(), searchingFor)
 		w.Write(b)
 	}
 }
