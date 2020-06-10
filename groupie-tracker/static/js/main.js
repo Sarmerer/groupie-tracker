@@ -17,7 +17,7 @@ function updateCards(amount) {
         var id = 0
         return $.ajax({
             type: "POST",
-            url: '/get-artists',
+            url: '/api/get-artists',
             dataType: "json",
             data: {
                 "cardsAmount": amount,
@@ -64,6 +64,8 @@ function updateCards(amount) {
                 });
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                console.log(errorThrown);
+                
                 alert('500 Internal server error')
             }
         });
@@ -122,7 +124,7 @@ $('#search').on('input', function () {
 
         return $.ajax({
             type: "POST",
-            url: '/find',
+            url: '/api/find',
             dataType: "json",
             data: {
                 "search": $("#search").val()

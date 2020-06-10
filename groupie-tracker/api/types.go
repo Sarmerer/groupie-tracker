@@ -1,4 +1,4 @@
-package student
+package api
 
 type Response struct {
 	Artists   string
@@ -48,3 +48,31 @@ type IndexR struct {
 }
 
 type M map[string][]string
+
+type Data struct {
+	ArtistsID     int
+	Image         string
+	Name          string
+	Members       []string
+	CreationDate  int
+	FirstAlbum    string
+	LocationsLink string
+	ConcertDates  string
+	Relations     string
+
+	Locations      []string
+	LocationsDates string
+
+	Dates          []string
+	RelationStruct M
+
+	ErrorCode int
+	Error     string
+
+	FoundBy []string
+	JSONLen int
+}
+
+type Result struct {
+	DataArr []Data
+}
