@@ -18,6 +18,7 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 		var data Data
 
 		var currIndex int
+		dataArrIndexCounter := 0
 
 		//convert everything to lower case to ease search algorithm
 		searchingFor := strings.ToLower(r.FormValue("search"))
@@ -129,7 +130,8 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 				foundBy = strings.Replace(foundBy, "_", " ", -1)
 				foundBy = strings.Title(foundBy)
 				data.FoundBy = append(data.FoundBy, foundBy)
-				dataArr[pers].FoundBy = data.FoundBy
+				dataArr[dataArrIndexCounter].FoundBy = data.FoundBy
+				dataArrIndexCounter++
 			}
 		}
 		result := Result{
