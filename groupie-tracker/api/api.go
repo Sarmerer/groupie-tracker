@@ -43,6 +43,5 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 		findArtist(w, r)
 	case "get-artists":
 		getArtists(w, r)
-
 	}
 }

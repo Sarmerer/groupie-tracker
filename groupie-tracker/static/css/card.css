@@ -15,6 +15,29 @@
     margin: 4px 0;
     color: #3e3e3e !important;
 }
+/*  */
+/*  */
+/* Genious thing start */
+/*  */
+/*  */
+.card h5 {
+    position: absolute;
+    background-color: lawngreen;
+    bottom: 0;
+}
+
+.card p{
+    margin-bottom: 50px;
+}
+
+.card h5 + .card p {
+    margin-top: 10px;
+}
+/*  */
+/*  */
+/* Genious thing end */
+/*  */
+/*  */
 
 .card {
     cursor: default;

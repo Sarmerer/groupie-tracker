@@ -15,7 +15,11 @@ import (
 func getArtists(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		amount, err := strconv.Atoi(r.FormValue("cardsAmount"))
+		if r.FormValue("artists-amount") == "" {
+			fmt.Fprintf(w, "artists-amout variable is required")
+			break
+		}
+		amount, err := strconv.Atoi(r.FormValue("artists-amount"))
 		if err != nil {
 			log.Println(err)
 			amount = 9
@@ -48,7 +52,7 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 		// }
 
 	default:
-		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+		fmt.Fprintf(w, "Only POST method is available.")
 		break
 	}
 }

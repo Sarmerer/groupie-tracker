@@ -1,4 +1,5 @@
 var response = null;
+$('#nothing-found').hide();
 updateCards(9);
 
 //TODO: create function for ajax request
@@ -9,18 +10,12 @@ function updateCards(amount) {
         return;
     }
     $(document).ready(function () {
-        var name = ""
-        var image = ""
-        var creationDate = 0
-        var firstAlbum = 0
-        var members = "<br>"
-        var id = 0
         return $.ajax({
             type: "POST",
             url: '/api/get-artists',
             dataType: "json",
             data: {
-                "cardsAmount": amount,
+                "artists-amount": amount,
             },
             traditional: true,
 
@@ -30,25 +25,24 @@ function updateCards(amount) {
                 $('#container').empty();
                 response = retrievedData
                 $.each(retrievedData.DataArr, function (_, value) {
-                    name = value.Name;
-                    image = value.Image;
-                    creationDate = value.CreationDate;
-                    firstAlbum = value.FirstAlbum;
-                    id = value.ArtistsID
+
+                    var members = "<br>"
+                    var id = value.ArtistsID
+
                     $.each(value.Members, function (_, memb) {
                         members += memb + "<br>"
                     });
                     $('#container').append(`
                         <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
                             <div class='img-overlay'> 
-                                <img src='` + image + `'></img>
-                                    <div class='img-text'>` + creationDate + `</div>
+                                <img src='` + value.Image + `'></img>
+                                    <div class='img-text'>` + value.CreationDate + `</div>
                             </div>
                             <div class='info'>
                                  <h2>
-                                    <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + name + `</a>
+                                    <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + value.Name + `</a>
                                 </h2> 
-                                    <div class='title'>1<sup>st</sup> album: ` + firstAlbum + `</div>
+                                    <div class='title'>1<sup>st</sup> album: ` + value.FirstAlbum + `</div>
                             <div class='desc'>
                                 <p>` + members + `</p>
                             </div>
@@ -60,7 +54,6 @@ function updateCards(amount) {
                                 </div>
                             </div>
                         </div>`).hide().slideDown('normal');
-                    members = "<br>"
                 });
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -112,14 +105,6 @@ function openModal(modalReference) {
 
 $('#search').on('input', function () {
     if ($('#search').val() != "") {
-        var name = ""
-        var image = ""
-        var foundBy = ""
-        var members = "<br>"
-
-        var id = 0
-        var creationDate = 0
-        var firstAlbum = 0
 
         return $.ajax({
             type: "POST",
@@ -131,19 +116,21 @@ $('#search').on('input', function () {
             traditional: true,
 
             success: function (retrievedData) {
+                if (retrievedData.DataArr === null) {
+                    $('#container').empty();
+                    $('#nothing-found').show();
+                } else {
+                    $('#nothing-found').hide();
+                }
                 console.clear();
                 console.log(retrievedData);
                 //update response for openModal() 
                 response = retrievedData
                 $('#container').empty();
                 $.each(retrievedData.DataArr, function (_, value) {
-                    name = value.Name;
-                    image = value.Image;
-                    foundBy = value.FoundBy;
-
-                    id = value.ArtistsID;
-                    creationDate = value.CreationDate;
-                    firstAlbum = value.FirstAlbum;
+                    var members = "<br>"
+                    var foundBy = value.FoundBy;
+                    var id = value.ArtistsID;
 
                     $.each(value.Members, function (_, value) {
                         members += value + "<br>"
@@ -153,17 +140,17 @@ $('#search').on('input', function () {
                         <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
                             <div>
                                 <div class='img-overlay'>
-                                    <img src='` + image + `'></img>
+                                    <img src='` + value.Image + `'></img>
                                         <div class='img-text'>
-                                            ` + creationDate + `
+                                            ` + value.CreationDate + `
                                         </div>
                                 </div>
                                 <div class='info'>
                                     <h2>
-                                        <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + name + `</a>
+                                        <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + value.Name + `</a>
                                     </h2>
                                     <div class='title'>
-                                        1<sup>st</sup> album: ` + firstAlbum + `
+                                        1<sup>st</sup> album: ` + value.FirstAlbum + `
                                     </div>
                                     <div class='desc'>
                                         <p>` + members + `</p>
@@ -176,9 +163,9 @@ $('#search').on('input', function () {
                                         </div>
                                 </div>
                             </div>
+                            <h5>Found by ` + foundBy + `</h5>
                         </div>`).hide().fadeIn('fast')
                     }
-                    members = "<br>"
                 });
             },
             error: function (jqXHR, textStatus, errorThrown) {
