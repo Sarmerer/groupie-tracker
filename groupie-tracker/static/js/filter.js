@@ -1,6 +1,7 @@
 var checkboxes = ['dateCreated', 'album', 'members', 'concerts']
 
 var allArtists = null
+var artistsLeft = [];
 
 $(document).ready(function () {
     return $.ajax({
@@ -51,13 +52,27 @@ function checkCreationDate() {
 
     $.each(allArtists.DataArr, function (index, value) {
         if (value.CreationDate >= fromDate && value.CreationDate <= toDate) {
+            artistsLeft.push(allArtists.DataArr[index]);
             appendCard(index)
         }
     });
 }
 
 function checkFirstAlbumDate() {
-    console.log("im in adate");
+    var data = null
+    if (artistsLeft.length > 0) {
+        data = artistsLeft;
+    }else{
+        data = allArtists
+    }
+    console.log(data);
+    
+    $.each(data, function (index, value) {
+        if (value.FirstAlbum >= fromDate && value.FirstAlbum <= toDate) {
+            artistsLeft.push(allArtists.DataArr[index]);
+            appendCard(index)
+        }
+    });
 }
 
 function checkMemberAmount() {
@@ -69,21 +84,21 @@ function checkCountries() {
 }
 
 function appendCard(index) {
-    console.log(allArtists.DataArr[index]);
 
-    var id = allArtists.DataArr[index].ArtistsID
+    var value = allArtists.DataArr[index]
+    var id = value.ArtistsID;
 
     $('#container').append(`
     <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
         <div class='img-overlay'> 
-            <img src='` + allArtists.DataArr[index].Image + `'></img>
-                <div class='img-text'>` + allArtists.DataArr[index].CreationDate + `</div>
+            <img src='` + value.Image + `'></img>
+                <div class='img-text'>` + value.CreationDate + `</div>
         </div>
         <div class='info'>
              <h2>
-                <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + allArtists.DataArr[index].Name + `</a>
+                <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + value.Name + `</a>
             </h2> 
-                <div class='title'>1<sup>st</sup> album: ` + allArtists.DataArr[index].FirstAlbum + `</div>
+                <div class='title'>1<sup>st</sup> album: ` + value.FirstAlbum + `</div>
         <div class='desc'>
             <p>` + members + `</p>
         </div>
