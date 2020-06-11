@@ -58,6 +58,7 @@ var countries = ["Argentina",
 ]
 
 $(document).ready(function () {
+    $(window).scrollTop(0); 
     $('#dateCreatedInput, #albumInput, #membersInput, #concertsInput').hide();
     displayConcerts()
 });
@@ -100,7 +101,7 @@ function navControl(amount, unit) {
     heroDiv.style.marginRight = amount + unit;
 }
 
-$('#dateCreated, #album, #members, #concerts').change(function (e) {
+$('#dateCreated, #album, #members, #concerts').change(function () {
     var selected = "#" + this.id + "Input"
     if (this.checked) {
         if ($(selected).is(":hidden")) {
