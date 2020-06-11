@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -36,10 +37,33 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 		w.Write(b)
+		// Countries := make(map[string]string)
+		// for i := 0; i <= 51; i++ {
+		// 	for _, loc := range locations.IndexL[i].Locations {
+		// 		country := trimAfter(loc, "-")
+		// 		if _, ok := Countries[country]; !ok {
+		// 			Countries[country] = country
+		// 		}
+		// 	}
+		// }
+
 	default:
 		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
 		break
 	}
+}
+
+func trimAfter(value string, a string) string {
+	// Get substring after a string.
+	pos := strings.LastIndex(value, a)
+	if pos == -1 {
+		return ""
+	}
+	adjustedPos := pos + len(a)
+	if adjustedPos >= len(value) {
+		return ""
+	}
+	return value[adjustedPos:len(value)]
 }
 
 func getData(pers int) Data {

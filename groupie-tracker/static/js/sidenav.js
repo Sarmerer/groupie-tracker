@@ -13,6 +13,7 @@ function closeNav() {
 }
 
 function displayInput(name) {
+    displayConcerts()
     // Get the checkbox
     var checkBox = document.getElementById(name);
     var inputName = name + "Input"
@@ -28,6 +29,18 @@ function displayInput(name) {
     }
 }
 
+function displayConcerts() {
+    countries.forEach(country => {
+        $('#concerts-content').append(`
+        <div class="form-check">
+            <input class="form-check-input position-static" type="checkbox" 
+            id = "` + country + `" value = "` + country + `" >
+        <label class = "form-check-label" for = "` + country + `"> ` + country + ` </label> 
+        </div>`)
+    });
+
+}
+
 var slider = document.getElementById("membersInp");
 var output = document.getElementById("membersNum");
 output.innerHTML = slider.value;
@@ -40,3 +53,55 @@ slider.oninput = function () {
         output.innerHTML = this.value;
     }
 }
+
+var countries = ["Hungary",
+    "Sweden",
+    "Netherlands",
+    "Brasil",
+    "Thailand",
+    "Indonesia",
+    "Belgium",
+    "Qatar",
+    "Saudi Arabia",
+    "Ireland",
+    "Italy",
+    "Korea",
+    "Netherlands Antilles",
+    "New Zealand",
+    "Belarus",
+    "Brazil",
+    "Czech Republic",
+    "Romania",
+    "Poland",
+    "Philippines",
+    "Mexico",
+    "Germany",
+    "Denmark",
+    "Chile",
+    "Peru",
+    "Costa Rica",
+    "Portugal",
+    "UK",
+    "Philippine",
+    "French Polynesia",
+    "Spain",
+    "Colombia",
+    "United Arab Emirates",
+    "Norway",
+    "China",
+    "Japan",
+    "New Caledonia",
+    "Switzerland",
+    "France",
+    "Australia",
+    "Slovakia",
+    "Argentina",
+    "India",
+    "USA",
+    "Finland",
+    "Canada",
+    "US",
+    "Greece",
+    "Taiwan",
+    "Austria"
+]

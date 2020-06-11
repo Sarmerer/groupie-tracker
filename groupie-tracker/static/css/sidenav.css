@@ -85,7 +85,7 @@
     width: 100%;
     /* Width of the outside container */
     flex-direction: row;
-    justify-content: center;
+    justify-content: start;
 }
 
 .slider {
@@ -126,4 +126,54 @@
 
 #membersNum {
     margin: 0px 10px;
+}
+
+#dateCreatedInput,
+#albumInput {
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#dateCreatedInput input,
+#albumInput input {
+    background-color: #d3d3d333;
+    border: none;
+    width: 73px;
+}
+
+#concertsInput {
+    height: 300px;
+    width: 100%;
+    padding: 3px;
+}
+
+#concerts-content {
+    height: 100%;
+    width: auto;
+    padding: 10px;
+    overflow: auto;
+    background: #d3d3d333;
+    border-radius: 5px;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(94, 94, 94);
 }
