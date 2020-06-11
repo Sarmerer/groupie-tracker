@@ -15,29 +15,6 @@
     margin: 4px 0;
     color: #3e3e3e !important;
 }
-/*  */
-/*  */
-/* Genious thing start */
-/*  */
-/*  */
-.card h5 {
-    position: absolute;
-    background-color: lawngreen;
-    bottom: 0;
-}
-
-.card p{
-    margin-bottom: 50px;
-}
-
-.card h5 + .card p {
-    margin-top: 10px;
-}
-/*  */
-/*  */
-/* Genious thing end */
-/*  */
-/*  */
 
 .card {
     cursor: default;
@@ -53,13 +30,14 @@
     transition: all 200ms ease-out;
 }
 
-.card-placeholder {
-    color: lawngreen;
-    width: 20px;
-    height: 100px;
-    background: red;
+.card .card-header {
+    background-color: rgb(117, 0, 0);
+    color: white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 5px 10px;
+    height: 51px;
 }
-
 
 .card img {
     height: auto;
@@ -81,21 +59,6 @@
     right: 0px;
     background-color: rgb(27, 27, 27, 0.6);
     padding: 3px 40px 3px 8px;
-}
-
-.card-overlay {
-    position: relative;
-}
-
-.card-bookmark {
-    z-index: 1;
-    position: absolute;
-    top: 0px;
-    left: 25px;
-    background-color: rgb(185, 0, 0);
-    padding: 10px 3px 10px 3px;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
 }
 
 .card:hover {

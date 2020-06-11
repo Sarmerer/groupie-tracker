@@ -138,6 +138,9 @@ $('#search').on('input', function () {
                     if (!($('#' + id).length)) {
                         $('#container').append(`
                         <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
+                            <div class = "card-header">
+                                <span> Found by: ` + foundBy + ` </span>
+                            </div>
                             <div>
                                 <div class='img-overlay'>
                                     <img src='` + value.Image + `'></img>
@@ -163,8 +166,8 @@ $('#search').on('input', function () {
                                         </div>
                                 </div>
                             </div>
-                            <h5>Found by ` + foundBy + `</h5>
-                        </div>`).hide().fadeIn('fast')
+                        </div>
+                        `).hide().fadeIn('fast')
                     }
                 });
             },
