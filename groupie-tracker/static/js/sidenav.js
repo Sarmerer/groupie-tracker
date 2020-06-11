@@ -1,33 +1,43 @@
 /* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
-function openNav() {
-    document.getElementById("mySidenav").style.width = "280px";
-    document.getElementById("main").style.marginRight = "280px";
-    document.getElementById("hero").style.marginRight = "280px";
-}
 
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
-function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginRight = "0";
-    document.getElementById("hero").style.marginRight = "0";
-}
+var sideNav = document.getElementById("mySidenav")
+var mainDiv = document.getElementById("main")
+var heroDiv = document.getElementById("hero")
+var navOpened = false
 
-function displayInput(name) {
+$(document).ready(function () {
+    $('#dateCreatedInput, #albumInput, #membersInput, #concertsInput').hide();
     displayConcerts()
-    // Get the checkbox
-    var checkBox = document.getElementById(name);
-    var inputName = name + "Input"
+});
 
-    // Get the output text
-    var text = document.getElementById(inputName);
-
-    // If the checkbox is checked, display the output text
-    if (checkBox.checked == true) {
-        text.style.display = "flex";
+$('#openbtn, #closebtn').click(function (e) {
+    if (navOpened) {
+        navControl("0", "")
+        navOpened = false
     } else {
-        text.style.display = "none";
+        navControl("280", "px")
+        navOpened = true
     }
+});
+
+function navControl(amount, unit) {
+    sideNav.style.width = amount + unit;
+    mainDiv.style.marginRight = amount + unit;
+    heroDiv.style.marginRight = amount + unit;
 }
+
+$('#dateCreated, #album, #members, #concerts').change(function (e) {
+    var selected = "#" + this.id + "Input"
+    if (this.checked) {
+        if ($(selected).is(":hidden")) {
+            $(selected).slideDown("fast");
+        }
+    } else {
+        if ($(selected).is(":visible")) {
+            $(selected).slideUp("fast");
+        }
+    }
+});
 
 function displayConcerts() {
     countries.forEach(country => {
@@ -38,7 +48,6 @@ function displayConcerts() {
         <label class = "form-check-label" for = "` + country + `"> ` + country + ` </label> 
         </div>`)
     });
-
 }
 
 var slider = document.getElementById("membersInp");
@@ -54,54 +63,54 @@ slider.oninput = function () {
     }
 }
 
-var countries = ["Hungary",
-    "Sweden",
-    "Netherlands",
-    "Brasil",
-    "Thailand",
-    "Indonesia",
+var countries = ["Argentina",
+    "Australia",
+    "Austria",
+    "Belarus",
     "Belgium",
-    "Qatar",
-    "Saudi Arabia",
+    "Brasil",
+    "Brazil",
+    "Canada",
+    "Chile",
+    "China",
+    "Colombia",
+    "Costa Rica",
+    "Czech Republic",
+    "Denmark",
+    "Finland",
+    "France",
+    "French Polynesia",
+    "Germany",
+    "Greece",
+    "Hungary",
+    "India",
+    "Indonesia",
     "Ireland",
     "Italy",
-    "Korea",
-    "Netherlands Antilles",
-    "New Zealand",
-    "Belarus",
-    "Brazil",
-    "Czech Republic",
-    "Romania",
-    "Poland",
-    "Philippines",
-    "Mexico",
-    "Germany",
-    "Denmark",
-    "Chile",
-    "Peru",
-    "Costa Rica",
-    "Portugal",
-    "UK",
-    "Philippine",
-    "French Polynesia",
-    "Spain",
-    "Colombia",
-    "United Arab Emirates",
-    "Norway",
-    "China",
     "Japan",
+    "Korea",
+    "Mexico",
+    "Netherlands Antilles",
+    "Netherlands",
     "New Caledonia",
-    "Switzerland",
-    "France",
-    "Australia",
+    "New Zealand",
+    "Norway",
+    "Peru",
+    "Philippine",
+    "Philippines",
+    "Poland",
+    "Portugal",
+    "Qatar",
+    "Romania",
+    "Saudi Arabia",
     "Slovakia",
-    "Argentina",
-    "India",
-    "USA",
-    "Finland",
-    "Canada",
-    "US",
-    "Greece",
+    "Spain",
+    "Sweden",
+    "Switzerland",
     "Taiwan",
-    "Austria"
+    "Thailand",
+    "UK",
+    "US",
+    "USA",
+    "United Arab Emirates",
 ]
