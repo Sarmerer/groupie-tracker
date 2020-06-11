@@ -5,74 +5,6 @@ var mainDiv = document.getElementById("main")
 var heroDiv = document.getElementById("hero")
 var navOpened = false
 
-$(document).ready(function () {
-    $('#dateCreatedInput, #albumInput, #membersInput, #concertsInput').hide();
-    displayConcerts()
-});
-
-$('#openbtn, #closebtn').click(function () {
-    if (navOpened) {
-        navControl("0", "")
-        navOpened = false
-    } else {
-        navControl("280", "px")
-        navOpened = true
-    }
-});
-
-$('#scroll').click(function () {
-    $('#hero').slideUp("slow");
-});
-
-if ($(('#hero').visible(false))) {
-
-    $('#hero').hide();
-}
-
-
-function navControl(amount, unit) {
-    sideNav.style.width = amount + unit;
-    mainDiv.style.marginRight = amount + unit;
-    heroDiv.style.marginRight = amount + unit;
-}
-
-$('#dateCreated, #album, #members, #concerts').change(function (e) {
-    var selected = "#" + this.id + "Input"
-    if (this.checked) {
-        if ($(selected).is(":hidden")) {
-            $(selected).slideDown("fast");
-        }
-    } else {
-        if ($(selected).is(":visible")) {
-            $(selected).slideUp("fast");
-        }
-    }
-});
-
-function displayConcerts() {
-    countries.forEach(country => {
-        $('#concerts-content').append(`
-        <div class="form-check">
-            <input class="form-check-input position-static" type="checkbox" 
-            id = "` + country + `" value = "` + country + `" >
-        <label class = "form-check-label" for = "` + country + `"> ` + country + ` </label> 
-        </div>`)
-    });
-}
-
-var slider = document.getElementById("membersInp");
-var output = document.getElementById("membersNum");
-output.innerHTML = slider.value;
-
-slider.oninput = function () {
-    if (slider.value == 10) {
-        output.innerHTML = this.value + "+";
-
-    } else {
-        output.innerHTML = this.value;
-    }
-}
-
 var countries = ["Argentina",
     "Australia",
     "Austria",
@@ -124,3 +56,83 @@ var countries = ["Argentina",
     "USA",
     "United Arab Emirates",
 ]
+
+$(document).ready(function () {
+    $('#dateCreatedInput, #albumInput, #membersInput, #concertsInput').hide();
+    displayConcerts()
+});
+
+$('#openbtn, #closebtn').click(function () {
+    if (navOpened) {
+        navControl("0", "")
+        navOpened = false
+    } else {
+        navControl("280", "px")
+        navOpened = true
+    }
+});
+
+$('#scroll').click(function () {
+    $('#hero').slideUp("slow");
+});
+
+var hiddenBool = false
+if (!hiddenBool){
+    $(document).ready(function () {
+        $(document).scroll(function () {
+            var $obj = $(document).find("#hero");
+            var top = $(window).scrollTop();
+            var bottom = top + $(window).height();
+            var objTop = $obj.offset().top;
+            var objBottom = objTop + $obj.height();
+    
+            if (!(objTop < bottom && objBottom > top)) {
+                $($obj).hide();              
+                hiddenBool = true
+            }
+        });
+    });
+}
+
+function navControl(amount, unit) {
+    sideNav.style.width = amount + unit;
+    mainDiv.style.marginRight = amount + unit;
+    heroDiv.style.marginRight = amount + unit;
+}
+
+$('#dateCreated, #album, #members, #concerts').change(function (e) {
+    var selected = "#" + this.id + "Input"
+    if (this.checked) {
+        if ($(selected).is(":hidden")) {
+            $(selected).slideDown("fast");
+        }
+    } else {
+        if ($(selected).is(":visible")) {
+            $(selected).slideUp("fast");
+        }
+    }
+});
+
+function displayConcerts() {
+    countries.forEach(country => {
+        $('#concerts-content').append(`
+        <div class="form-check">
+            <input class="form-check-input position-static" type="checkbox" 
+            id = "` + country + `" value = "` + country + `" >
+        <label class = "form-check-label" for = "` + country + `"> ` + country + ` </label> 
+        </div>`)
+    });
+}
+
+var slider = document.getElementById("membersInp");
+var output = document.getElementById("membersNum");
+output.innerHTML = slider.value;
+
+slider.oninput = function () {
+    if (slider.value == 10) {
+        output.innerHTML = this.value + "+";
+
+    } else {
+        output.innerHTML = this.value;
+    }
+}
