@@ -1,34 +1,70 @@
 /* The hero image */
 .hero-img {
     /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2)),
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.4)),
         url("/static/assets/freddie-hero.jpg");
     /* Set a specific height */
-    height: 30%;
+    height: 100%;
 
     /* Position and center the image to scale nicely on all screens */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
+    box-shadow: 0 0 23px 0 rgba(90, 90, 90, 0.8);
 }
 
 /* Place text in the middle of the image */
 .hero-text {
     text-align: center;
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
 }
 
 .hero-text h1 {
-    font-size: 120px;
+    font-size: 220px;
     line-height: 0.7em;
 }
 
 .hero-text h2 {
     font-family: "Mrs Saint Delafield", cursive;
     color: #b4b4b4 !important;
+    font-size: 60px;
+    margin-bottom: 200px;
+
+}
+
+.button-down {
+    position: relative;
+    padding: 5px;
+    margin: 0 auto;
+    background: #000;
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    transition: all 0.2s linear;
+}
+
+.button-down:hover {
+    transform: translate3d(0, 10px, 0);
+}
+
+.button-down::after {
+    top: 15px;
+    transform: rotate(225deg);
+}
+
+.button-down::after {
+    content: "";
+    position: absolute;
+    left: 21px;
+    z-index: 11;
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-top: 2px solid #fff;
+    border-left: 2px solid #fff;
 }

@@ -10,7 +10,7 @@ $(document).ready(function () {
     displayConcerts()
 });
 
-$('#openbtn, #closebtn').click(function (e) {
+$('#openbtn, #closebtn').click(function () {
     if (navOpened) {
         navControl("0", "")
         navOpened = false
@@ -19,6 +19,16 @@ $('#openbtn, #closebtn').click(function (e) {
         navOpened = true
     }
 });
+
+$('#scroll').click(function () {
+    $('#hero').slideUp("slow");
+});
+
+if ($(('#hero').visible(false))) {
+
+    $('#hero').hide();
+}
+
 
 function navControl(amount, unit) {
     sideNav.style.width = amount + unit;
