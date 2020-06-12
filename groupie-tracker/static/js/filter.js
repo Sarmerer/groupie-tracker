@@ -40,8 +40,8 @@ $(document).ready(function () {
             $.each(checkboxes, function (_y, box) {
                 if ($('#' + box).is(":checked")) {
                     checkers[box]();
-                    $('#' + box).prop("checked", false);
-                    $('#' + box + 'Input').hide();
+                    //$('#' + box).prop("checked", false);
+                    //  $('#' + box + 'Input').hide();
                 }
             });
             navControl("0", "")
@@ -64,14 +64,12 @@ function checkCreationDate() {
 }
 
 function checkFirstAlbumDate() {
-    var fromDate = Date.parse($('#albumFrom').val());
-    var toDate = Date.parse($('#albumTo').val());
+    var fromDate = parseInt($('#albumFrom').val());
+    var toDate = parseInt($('#albumTo').val());
     var data = getFilteredArtists();
     $.each(data, function (index, value) {
         var spl = value.FirstAlbum.split("/")
-        var d = spl[2] + "-" + spl[1] + "-" + spl[0];
-        var date = Date.parse(d);
-        //console.log("D: ", date, "from date: ", fromDate, "to date", toDate);
+        var date = spl[2]
         if (date >= fromDate && date <= toDate) {
             response.push(data[index]);
             appendCard(value.ArtistsID - 1)
@@ -93,6 +91,7 @@ function checkMemberAmount() {
 function checkCountries() {
     var checkedCountries = []
     var data = getFilteredArtists()
+    console.log(data);
     $.each(countries, function (_, box) {
         if ($('#' + box.replace(/\s+/g, '')).is(":checked")) {
             checkedCountries.push(box.toLowerCase())
@@ -103,7 +102,7 @@ function checkCountries() {
 
             if (value.Locations.toString().includes(country)) {
                 response.push(allArtists[index]);
-                appendCard(index)
+                appendCard(value.ArtistsID - 1)
                 return false
             }
         })

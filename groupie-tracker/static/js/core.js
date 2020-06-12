@@ -81,6 +81,8 @@ function openModal(modalReference) {
 
     var concertDates = ""
     var membersList = ""
+    console.log(targetCardIndex);
+
     $.each(response[targetCardIndex].RelationStruct, function (key, value) {
         key = key.replace(/-/g, ", ");
         key = key.replace(/_/g, " ");
