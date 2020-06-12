@@ -44,6 +44,9 @@ $(document).ready(function () {
                     //  $('#' + box + 'Input').hide();
                 }
             });
+            if (response.length === 0) {
+                $('#nothing-found').show();
+            }
             navControl("0", "")
             navOpened = false
         });
@@ -89,26 +92,21 @@ function checkMemberAmount() {
 }
 
 function checkCountries() {
-    var checkedCountries = []
     var data = getFilteredArtists()
-    console.log(data);
     $.each(countries, function (_, box) {
-        if ($('#' + box.replace(/\s+/g, '')).is(":checked")) {
-            checkedCountries.push(box.toLowerCase())
+        if ($('#' + box).is(":checked")) {
+            country = box.toLowerCase()
+            $.each(data, function (index, value) {
+                $.each(value.Locations, function (_, loc) {
+                    if (loc.includes(country)) {
+                        response.push(data[index]);
+                        appendCard(value.ArtistsID - 1)
+                        return false
+                    }
+                });
+            })
         }
     });
-    $.each(data, (index, value) => {
-        (checkedCountries).every(function (country, _) {
-
-            if (value.Locations.toString().includes(country)) {
-                response.push(allArtists[index]);
-                appendCard(value.ArtistsID - 1)
-                return false
-            }
-        })
-
-    })
-
 }
 
 function getFilteredArtists() {

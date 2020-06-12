@@ -81,6 +81,7 @@ function openModal(modalReference) {
 
     var concertDates = ""
     var membersList = ""
+    
     console.log(targetCardIndex);
 
     $.each(response[targetCardIndex].RelationStruct, function (key, value) {

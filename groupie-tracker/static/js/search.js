@@ -18,8 +18,6 @@ $(document).ready(function () {
                     } else {
                         $('#nothing-found').hide();
                     }
-                    console.clear();
-                    console.log(retrievedData);
                     //update response for openModal() 
                     response = retrievedData
                     $('#container').empty();
