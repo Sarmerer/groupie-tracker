@@ -1,7 +1,8 @@
 var checkboxes = ['dateCreated', 'album', 'members', 'concerts']
+var countriesChecboxes = ["Argentina", "Australia", "Austria", "Belarus", "Belgium", "Brasil", "Brazil", "Canada", "Chile", "China", "Colombia", "Costa Rica", "Czech Republic", "Denmark", "Finland", "France", "French Polynesia", "Germany", "Greece", "Hungary", "India", "Indonesia", "Ireland", "Italy", "Japan", "Korea", "Mexico", "Netherlands Antilles", "Netherlands", "New Caledonia", "New Zealand", "Norway", "Peru", "Philippine", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Saudi Arabia", "Slovakia", "Spain", "Sweden", "Switzerland", "Taiwan", "Thailand", "UK", "US", "USA", "United Arab Emirates", ]
 
 var allArtists = null
-var artistsLeft = [];
+var filteredArtists = [];
 
 $(document).ready(function () {
     return $.ajax({
@@ -33,7 +34,7 @@ $(document).ready(function () {
     if (validate()) {
         $('#apply-filter').click(function () {
             $('#container').empty();
-            $.each(checkboxes, function (_y, box) {
+            $.each(checkboxes, function (_, box) {
                 if ($('#' + box).is(":checked")) {
                     checkers[box]();
                     $('#' + box).prop("checked", false);
@@ -52,35 +53,68 @@ function checkCreationDate() {
 
     $.each(allArtists.DataArr, function (index, value) {
         if (value.CreationDate >= fromDate && value.CreationDate <= toDate) {
-            artistsLeft.push(allArtists.DataArr[index]);
+            filteredArtists.push(allArtists.DataArr[index]);
             appendCard(index)
         }
     });
 }
 
 function checkFirstAlbumDate() {
-    var data = null
-    if (artistsLeft.length > 0) {
-        data = artistsLeft;
-    }else{
-        data = allArtists
-    }
-    console.log(data);
-    
-    $.each(data, function (index, value) {
-        if (value.FirstAlbum >= fromDate && value.FirstAlbum <= toDate) {
-            artistsLeft.push(allArtists.DataArr[index]);
+    var albumFrom = parseInt($('#albumFrom').val());
+    var albumTo = parseInt($('#albumTo').val());
+    var data = getFilteredArtists()
+
+    $.each(data.DataArr, function (index, value) {
+        var firstAlbum = value.FirstAlbum.substring(6, 10)
+        if (firstAlbum >= albumFrom && firstAlbum <= albumTo) {
+            filteredArtists.push(allArtists.DataArr[index]);
             appendCard(index)
         }
     });
 }
 
 function checkMemberAmount() {
-    console.log("im in memb");
+    var numberOfMembers = parseInt($('#membersInp').val())
+    var data = getFilteredArtists()
+    $.each(data.DataArr, (index, value) => {
+        if (value.Members.length == numberOfMembers) {
+            filteredArtists.push(allArtists.DataArr[index]);
+            appendCard(index)
+        }
+    })
+
 }
 
 function checkCountries() {
-    console.log("im in cntr");
+    var checkedCountries = []
+    var data = getFilteredArtists()
+    $.each(countriesChecboxes, function (_, box) {
+        if ($('#' + box.replace(/\s+/g, '')).is(":checked")) {
+            checkedCountries.push(box.toLowerCase())
+        }
+    });
+    $.each(data.DataArr, (index, value) => {
+        (checkedCountries).every(function (country, _) {
+
+            if (value.Locations.toString().includes(country)) {
+                filteredArtists.push(allArtists.DataArr[index]);
+                appendCard(index)
+                return false
+            }
+        })
+
+    })
+
+}
+
+function getFilteredArtists() {
+    if (filteredArtists.length > 0) {
+        data = filteredArtists
+        $("#container").empty
+    } else {
+        data = allArtists
+    }
+    return data
 }
 
 function appendCard(index) {
