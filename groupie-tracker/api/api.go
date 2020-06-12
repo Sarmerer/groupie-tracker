@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"sync"
-	"time"
 )
 
 var apiLink = "https://groupietrackers.herokuapp.com/api"
@@ -18,8 +17,6 @@ func InitAPI() {
 	//parse api and save everthing into the struct
 	var wg sync.WaitGroup
 
-	tStart := time.Now()
-	log.Println("Parsing started")
 	sendRequest(apiLink)
 	wg.Add(1)
 	go func() {
@@ -29,11 +26,7 @@ func InitAPI() {
 		go sendRequest(response.Relation)
 		wg.Done()
 	}()
-
 	wg.Wait()
-
-	elapsed := time.Since(tStart)
-	log.Printf("Parsing took %.4fs\n", elapsed.Seconds())
 }
 
 func APIHandler(w http.ResponseWriter, r *http.Request) {
