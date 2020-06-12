@@ -45,12 +45,12 @@
     height: 70px;
     width: 70px;
     border-radius: 50%;
-    transition: all 0.2s linear;
+    /* transition: all 0.2s linear; */
 }
 
-.button-down:hover {
+/* .button-down:hover {
     transform: translate3d(0, 10px, 0);
-}
+} */
 
 .button-down::after {
     top: 15px;

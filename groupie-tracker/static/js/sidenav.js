@@ -73,28 +73,6 @@ $('#openbtn, #closebtn').click(function () {
     }
 });
 
-// $('#scroll').click(function () {
-//     $('#hero').slideUp("slow");
-// });
-
-// var hiddenBool = false
-// if (!hiddenBool){
-//     $(document).ready(function () {
-//         $(document).scroll(function () {
-//             var $obj = $(document).find("#hero");
-//             var top = $(window).scrollTop();
-//             var bottom = top + $(window).height();
-//             var objTop = $obj.offset().top;
-//             var objBottom = objTop + $obj.height();
-    
-//             if (!(objTop < bottom && objBottom > top)) {
-//                 $($obj).hide();              
-//                 hiddenBool = true
-//             }
-//         });
-//     });
-// }
-
 function navControl(amount, unit) {
     sideNav.style.width = amount + unit;
     mainDiv.style.marginRight = amount + unit;

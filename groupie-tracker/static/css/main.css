@@ -4,7 +4,7 @@
 body,
 html {
     height: 100%;
-    background: #f4f4f4 !important;
+    background: #f2f2f2 !important;
     font-family: Avenir !important;
     margin: 0;
 }
@@ -29,7 +29,7 @@ html {
 .search-container #search-icon {
     margin-left: 5px;
     margin-right: 10px;
-    color: #969db89f;
+    color: rgb(133, 0, 0);
     align-self: flex-end;
 }
 
@@ -37,7 +37,7 @@ html {
     cursor: pointer;
     margin-left: 5px;
     margin-right: 5px;
-    color: #969db8;
+    color: rgb(133, 0, 0);
     align-self: flex-end;
 }
 
@@ -47,16 +47,16 @@ html {
     height: auto;
     background-color: transparent;
     border: none;
-    border-bottom: 1px solid #969db89f;
+    border-bottom: 1px solid rgb(133, 0, 0);
     text-align: center;
 }
 
 .search-container:hover #search {
-    border-bottom: 1px solid #969db8;
+    border-bottom: 1px solid rgb(90, 0, 0);
 }
 
 .search-container:hover #search-icon {
-    color: #969db8;
+    color: rgb(90, 0, 0);
 }
 
 .modal {

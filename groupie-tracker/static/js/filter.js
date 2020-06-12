@@ -24,14 +24,14 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    $('.clear-filters').click(function () {
+    $('#reset-filter').click(function () {
         $('#nothing-found').hide();
         $.each(checkboxes, function (_, box) {
             if ($('#' + box).is(":checked")) {
                 $('#' + box).prop("checked", false);
-                $('#' + box + 'Input').each(function() {
+                $('#' + box + 'Input').each(function () {
                     $(this).val('');
-              });
+                });
                 $('#' + box + 'Input').hide();
             }
         });
