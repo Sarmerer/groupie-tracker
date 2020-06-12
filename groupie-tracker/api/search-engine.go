@@ -139,6 +139,6 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 		log.Printf("It tool %.4fs to search for %s\n", elapsed.Seconds(), searchingFor)
 		w.Write(b)
 	default:
-		fmt.Printf("Only POST method is available.")
+		w.Write([]byte("This function does not support " + r.Method + " method."))
 	}
 }

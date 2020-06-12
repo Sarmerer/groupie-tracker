@@ -15,8 +15,8 @@ import (
 func getArtists(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		if r.FormValue("artists-amount") == "" {
-			fmt.Fprintf(w, "artists-amout variable is required")
+		if r.FormValue("artists-amount") == "" || r.FormValue("random") == "" {
+			fmt.Fprintf(w, `artists-amout" and "random" variables are required`)
 			break
 		}
 		amount, err := strconv.Atoi(r.FormValue("artists-amount"))
@@ -31,7 +31,7 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 		if r.FormValue("random") == "1" {
 			persons = randomNums(amount)
 		} else {
-			persons = sortedNums()
+			persons = sortedNums(amount)
 		}
 
 		for _, pers := range persons {
@@ -45,8 +45,7 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 		w.Write(b)
 
 	default:
-		fmt.Fprintf(w, "Only POST method is available.")
-		break
+		w.Write([]byte("This function does not support " + r.Method + " method."))
 	}
 }
 
@@ -90,9 +89,9 @@ func getData(pers int) Data {
 	return data
 }
 
-func sortedNums() []int {
+func sortedNums(size int) []int {
 	var res []int
-	for i := 0; i <= 51; i++ {
+	for i := 0; i < size; i++ {
 		res = append(res, i)
 	}
 	return res

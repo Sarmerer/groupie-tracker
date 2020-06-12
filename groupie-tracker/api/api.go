@@ -36,5 +36,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 		findArtist(w, r)
 	case "get-artists":
 		getArtists(w, r)
+	default:
+		w.Write([]byte(`API does not have that function`))
 	}
 }

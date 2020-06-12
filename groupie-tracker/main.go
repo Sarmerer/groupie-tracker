@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -63,11 +62,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	indexTpl = template.Must(template.ParseGlob("templates/index/*.html"))
 	tpl404 = template.Must(template.ParseGlob("templates/404/*.html"))
 	if r.URL.Path != "/" {
-		data404 := APIpackage.Data{
-			ErrorCode: 404,
-			Error:     "404 Page not found",
-		}
-		tpl404.ExecuteTemplate(w, "404.html", data404)
+		callErrorPage(w, r, 404)
 		return
 	}
 
@@ -75,11 +70,34 @@ func index(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		indexTpl.ExecuteTemplate(w, "index.html", nil)
 	default:
-		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+		callErrorPage(w, r, 405)
 		break
 	}
 }
 
 func faviconHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/assets/favicon.ico")
+}
+
+func callErrorPage(w http.ResponseWriter, r *http.Request, errorCode int) {
+	var errorMsg string
+
+	switch errorCode {
+	case 404:
+		errorMsg = "404 Page not found"
+	case 405:
+		errorMsg = "405 Wrong method"
+	case 400:
+		errorMsg = "400 Bad request"
+	default:
+		errorMsg = "500 Internal error"
+		errorCode = 500
+	}
+
+	data404 := APIpackage.Data{
+		ErrorCode: errorCode,
+		Error:     errorMsg,
+	}
+	tpl404.ExecuteTemplate(w, "404.html", data404)
+	return
 }
