@@ -57,6 +57,18 @@ var countries = ["Argentina",
     "United Arab Emirates",
 ]
 
+var slider = document.getElementById("membersInp");
+var output = document.getElementById("membersNum");
+output.innerHTML = slider.value;
+
+slider.oninput = function () {
+    if (slider.value == 10) {
+        output.innerHTML = this.value + "+";
+    } else {
+        output.innerHTML = this.value;
+    }
+}
+
 $(document).ready(function () {
     $(window).scrollTop(0);
     $('#dateCreatedInput, #albumInput, #membersInput, #concertsInput').hide();
@@ -102,17 +114,4 @@ function displayConcerts() {
         <label class = "form-check-label" for = "` + country.replace(/\s+/g, '') + `" > ` + country + ` </label> 
         </div>`)
     });
-}
-
-var slider = document.getElementById("membersInp");
-var output = document.getElementById("membersNum");
-output.innerHTML = slider.value;
-
-slider.oninput = function () {
-    if (slider.value == 10) {
-        output.innerHTML = this.value + "+";
-
-    } else {
-        output.innerHTML = this.value;
-    }
 }

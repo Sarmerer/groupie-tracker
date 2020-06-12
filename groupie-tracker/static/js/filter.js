@@ -29,12 +29,19 @@ $(document).ready(function () {
         $.each(checkboxes, function (_, box) {
             if ($('#' + box).is(":checked")) {
                 $('#' + box).prop("checked", false);
-                $('#' + box + 'Input').each(function () {
+                $('#' + box + 'Input input').each(function () {
                     $(this).val('');
                 });
                 $('#' + box + 'Input').hide();
+                $.each(countries, function (_, countryBox) {
+                    if ($('#' + countryBox).is(":checked")) {
+                        $('#' + countryBox).prop("checked", false);
+                    }
+                });
             }
         });
+        $('#membersInp').val(5);
+        $('#membersNum').text('5');
         $('#container').empty();
         updateCards(9)
     });
