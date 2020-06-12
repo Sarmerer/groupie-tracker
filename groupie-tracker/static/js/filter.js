@@ -33,6 +33,8 @@ $(document).ready(function () {
     if (validate()) {
         $('#apply-filter').click(function () {
             $('#container').empty();
+            $('#search').val("");
+            $('#nothing-found').hide();
             console.clear();
             response = [];
             $.each(checkboxes, function (_y, box) {
@@ -64,19 +66,8 @@ function checkCreationDate() {
 function checkFirstAlbumDate() {
     var fromDate = Date.parse($('#albumFrom').val());
     var toDate = Date.parse($('#albumTo').val());
-    var data = [];
-
-    if (response.length > 0) {
-        data = response;
-        $('#container').empty();
-    } else {
-        data = allArtists
-    }
-
-
+    var data = getFilteredArtists();
     $.each(data, function (index, value) {
-        //console.log(value);
-
         var spl = value.FirstAlbum.split("/")
         var d = spl[2] + "-" + spl[1] + "-" + spl[0];
         var date = Date.parse(d);
@@ -90,15 +81,7 @@ function checkFirstAlbumDate() {
 
 function checkMemberAmount() {
     var membersAmount = parseInt($("#membersNum").text());
-    var data = [];
-
-    if (response.length > 0) {
-        data = response;
-        $('#container').empty();
-    } else {
-        data = allArtists
-    }
-    
+    var data = getFilteredArtists();
     $.each(data, function (index, value) {
         if (value.Members.length <= membersAmount) {
             response.push(data[index]);
@@ -108,7 +91,37 @@ function checkMemberAmount() {
 }
 
 function checkCountries() {
-    console.log("im in cntr");
+    var checkedCountries = []
+    var data = getFilteredArtists()
+    $.each(countriesChecboxes, function (_, box) {
+        if ($('#' + box.replace(/\s+/g, '')).is(":checked")) {
+            checkedCountries.push(box.toLowerCase())
+        }
+    });
+    $.each(data, (index, value) => {
+        (checkedCountries).every(function (country, _) {
+
+            if (value.Locations.toString().includes(country)) {
+                response.push(allArtists[index]);
+                appendCard(index)
+                return false
+            }
+        })
+
+    })
+
+}
+
+function getFilteredArtists() {
+    var data = [];
+    if (response.length > 0) {
+        data = response;
+        response = [];
+        $('#container').empty();
+    } else {
+        data = allArtists
+    }
+    return data;
 }
 
 function appendCard(index) {

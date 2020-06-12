@@ -58,7 +58,7 @@ var countries = ["Argentina",
 ]
 
 $(document).ready(function () {
-    $(window).scrollTop(0); 
+    $(window).scrollTop(0);
     $('#dateCreatedInput, #albumInput, #membersInput, #concertsInput').hide();
     displayConcerts()
 });
@@ -119,8 +119,9 @@ function displayConcerts() {
         $('#concerts-content').append(`
         <div class="form-check">
             <input class="form-check-input position-static" type="checkbox" 
-            id = "` + country + `" value = "` + country + `" >
-        <label class = "form-check-label" for = "` + country + `"> ` + country + ` </label> 
+            id = "` + country.replace(/\s+/g, '') + `"
+            value = "` + country + `" >
+        <label class = "form-check-label" for = "` + country.replace(/\s+/g, '') + `" > ` + country + ` </label> 
         </div>`)
     });
 }
