@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -39,12 +38,12 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 				if len(dataArr) >= 1 {
 					if dataArr[currIndex-1].Name != art.Name {
 						data = getData(pers)
-						foundBy += ", creation date"
+						foundBy += "creation date"
 						dataArr = append(dataArr, data)
 						currIndex++
 					} else {
 						if !strings.Contains(foundBy, "creation date") {
-							foundBy += "creation date"
+							foundBy += ", creation date"
 						}
 					}
 				} else {
@@ -133,10 +132,10 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 		}
 		b, err := json.Marshal(dataArr)
 		if err != nil {
-			fmt.Println(err)
+			log.Println("Error during json marshlling. Error:", err)
 		}
 		elapsed := time.Since(tStart)
-		log.Printf("It tool %.4fs to search for %s\n", elapsed.Seconds(), searchingFor)
+		log.Printf("It took %.4fs to search for %s\n", elapsed.Seconds(), searchingFor)
 		w.Write(b)
 	default:
 		w.Write([]byte("This function does not support " + r.Method + " method."))

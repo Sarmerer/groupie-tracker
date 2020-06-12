@@ -2,12 +2,10 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -16,12 +14,12 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 		if r.FormValue("artists-amount") == "" || r.FormValue("random") == "" {
-			fmt.Fprintf(w, `artists-amout" and "random" variables are required`)
+			w.Write([]byte(`artists-amout" and "random" variables are required`))
 			break
 		}
 		amount, err := strconv.Atoi(r.FormValue("artists-amount"))
 		if err != nil {
-			log.Println(err)
+			log.Println("Error during atoi conversion.Error:", err)
 			amount = 9
 		}
 
@@ -40,7 +38,7 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 
 		b, err1 := json.Marshal(dataArr)
 		if err1 != nil {
-			log.Println(err)
+			log.Println("Error during json marshlling. Error:", err)
 		}
 		w.Write(b)
 
@@ -49,23 +47,10 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func trimAfter(value string, a string) string {
-	// Get substring after a string.
-	pos := strings.LastIndex(value, a)
-	if pos == -1 {
-		return ""
-	}
-	adjustedPos := pos + len(a)
-	if adjustedPos >= len(value) {
-		return ""
-	}
-	return value[adjustedPos:len(value)]
-}
-
 func getData(pers int) Data {
 	myDate, err := time.Parse("02-01-2006 15:04", artists[pers].FirstAlbum+" 04:35")
 	if err != nil {
-		panic(err)
+		log.Println("Error during time formatting. Error:", err)
 	}
 	data := Data{
 		ArtistsID:     artists[pers].ID,
