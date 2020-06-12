@@ -27,29 +27,22 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 
 		var dataArr []Data
 		var persons []int
-		persons = randomNums(amount)
+
+		if r.FormValue("random") == "1" {
+			persons = randomNums(amount)
+		} else {
+			persons = sortedNums()
+		}
 
 		for _, pers := range persons {
 			dataArr = append(dataArr, getData(pers))
 		}
 
-		result := Result{
-			DataArr: dataArr,
-		}
-		b, err1 := json.Marshal(result)
+		b, err1 := json.Marshal(dataArr)
 		if err1 != nil {
 			log.Println(err)
 		}
 		w.Write(b)
-		// Countries := make(map[string]string)
-		// for i := 0; i <= 51; i++ {
-		// 	for _, loc := range locations.IndexL[i].Locations {
-		// 		country := trimAfter(loc, "-")
-		// 		if _, ok := Countries[country]; !ok {
-		// 			Countries[country] = country
-		// 		}
-		// 	}
-		// }
 
 	default:
 		fmt.Fprintf(w, "Only POST method is available.")
@@ -95,6 +88,14 @@ func getData(pers int) Data {
 		JSONLen: len(artists),
 	}
 	return data
+}
+
+func sortedNums() []int {
+	var res []int
+	for i := 0; i <= 51; i++ {
+		res = append(res, i)
+	}
+	return res
 }
 
 func randomNums(size int) []int {

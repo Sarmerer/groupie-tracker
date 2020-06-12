@@ -12,7 +12,7 @@ $(document).ready(function () {
                 traditional: true,
 
                 success: function (retrievedData) {
-                    if (retrievedData.DataArr === null) {
+                    if (retrievedData === null) {
                         $('#container').empty();
                         $('#nothing-found').show();
                     } else {
@@ -23,7 +23,7 @@ $(document).ready(function () {
                     //update response for openModal() 
                     response = retrievedData
                     $('#container').empty();
-                    $.each(retrievedData.DataArr, function (_, value) {
+                    $.each(retrievedData, function (_, value) {
                         var members = "<br>"
                         var foundBy = value.FoundBy;
                         var id = value.ArtistsID;

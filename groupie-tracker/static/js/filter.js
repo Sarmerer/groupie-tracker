@@ -1,7 +1,6 @@
 var checkboxes = ['dateCreated', 'album', 'members', 'concerts']
 
-var allArtists = null
-var artistsLeft = [];
+var allArtists = null;
 
 $(document).ready(function () {
     return $.ajax({
@@ -10,6 +9,7 @@ $(document).ready(function () {
         dataType: "json",
         data: {
             "artists-amount": 52,
+            "random": 0
         },
         traditional: true,
 
@@ -33,6 +33,8 @@ $(document).ready(function () {
     if (validate()) {
         $('#apply-filter').click(function () {
             $('#container').empty();
+            console.clear();
+            response = [];
             $.each(checkboxes, function (_y, box) {
                 if ($('#' + box).is(":checked")) {
                     checkers[box]();
@@ -47,36 +49,62 @@ $(document).ready(function () {
 });
 
 function checkCreationDate() {
-    fromDate = parseInt($('#dateCreatedFrom').val());
-    toDate = parseInt($('#dateCreatedTo').val());
 
-    $.each(allArtists.DataArr, function (index, value) {
+    var fromDate = parseInt($('#dateCreatedFrom').val());
+    var toDate = parseInt($('#dateCreatedTo').val());
+
+    $.each(allArtists, function (index, value) {
         if (value.CreationDate >= fromDate && value.CreationDate <= toDate) {
-            artistsLeft.push(allArtists.DataArr[index]);
-            appendCard(index)
+            response.push(allArtists[index]);
+            appendCard(value.ArtistsID - 1)
         }
     });
 }
 
 function checkFirstAlbumDate() {
-    var data = null
-    if (artistsLeft.length > 0) {
-        data = artistsLeft;
-    }else{
+    var fromDate = Date.parse($('#albumFrom').val());
+    var toDate = Date.parse($('#albumTo').val());
+    var data = [];
+
+    if (response.length > 0) {
+        data = response;
+        $('#container').empty();
+    } else {
         data = allArtists
     }
-    console.log(data);
-    
+
+
     $.each(data, function (index, value) {
-        if (value.FirstAlbum >= fromDate && value.FirstAlbum <= toDate) {
-            artistsLeft.push(allArtists.DataArr[index]);
-            appendCard(index)
+        //console.log(value);
+
+        var spl = value.FirstAlbum.split("/")
+        var d = spl[2] + "-" + spl[1] + "-" + spl[0];
+        var date = Date.parse(d);
+        //console.log("D: ", date, "from date: ", fromDate, "to date", toDate);
+        if (date >= fromDate && date <= toDate) {
+            response.push(data[index]);
+            appendCard(value.ArtistsID - 1)
         }
     });
 }
 
 function checkMemberAmount() {
-    console.log("im in memb");
+    var membersAmount = parseInt($("#membersNum").text());
+    var data = [];
+
+    if (response.length > 0) {
+        data = response;
+        $('#container').empty();
+    } else {
+        data = allArtists
+    }
+    
+    $.each(data, function (index, value) {
+        if (value.Members.length <= membersAmount) {
+            response.push(data[index]);
+            appendCard(value.ArtistsID - 1)
+        }
+    });
 }
 
 function checkCountries() {
@@ -85,20 +113,24 @@ function checkCountries() {
 
 function appendCard(index) {
 
-    var value = allArtists.DataArr[index]
-    var id = value.ArtistsID;
+    var id = allArtists[index].ArtistsID;
+    var members = "<br>"
+
+    $.each(allArtists[index].Members, function (_, memb) {
+        members += memb + "<br>"
+    });
 
     $('#container').append(`
     <div class='card' onclick='openModal(` + id + `)' id='` + id + `'>
         <div class='img-overlay'> 
-            <img src='` + value.Image + `'></img>
-                <div class='img-text'>` + value.CreationDate + `</div>
+            <img src='` + allArtists[index].Image + `'></img>
+                <div class='img-text'>` + allArtists[index].CreationDate + `</div>
         </div>
         <div class='info'>
              <h2>
-                <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + value.Name + `</a>
+                <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` + id + `'>` + allArtists[index].Name + `</a>
             </h2> 
-                <div class='title'>1<sup>st</sup> album: ` + value.FirstAlbum + `</div>
+                <div class='title'>1<sup>st</sup> album: ` + allArtists[index].FirstAlbum + `</div>
         <div class='desc'>
             <p>` + members + `</p>
         </div>

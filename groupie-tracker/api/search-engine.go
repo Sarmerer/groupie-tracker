@@ -131,10 +131,7 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 				dataArrIndexCounter++
 			}
 		}
-		result := Result{
-			DataArr: dataArr,
-		}
-		b, err := json.Marshal(result)
+		b, err := json.Marshal(dataArr)
 		if err != nil {
 			fmt.Println(err)
 		}

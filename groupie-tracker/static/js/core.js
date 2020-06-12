@@ -16,6 +16,7 @@ function updateCards(amount) {
             dataType: "json",
             data: {
                 "artists-amount": amount,
+                "random": 1
             },
             traditional: true,
 
@@ -24,7 +25,7 @@ function updateCards(amount) {
 
                 $('#container').empty();
                 response = retrievedData
-                $.each(retrievedData.DataArr, function (_, value) {
+                $.each(retrievedData, function (_, value) {
 
                     var members = "<br>"
                     var id = value.ArtistsID
@@ -67,7 +68,7 @@ function updateCards(amount) {
 function openModal(modalReference) {
 
     var targetCardIndex = modalReference
-    $.each(response.DataArr, function (key, value) {
+    $.each(response, function (key, value) {
         if (value.ArtistsID === modalReference) {
             targetCardIndex = key
             return false;
@@ -80,7 +81,7 @@ function openModal(modalReference) {
 
     var concertDates = ""
     var membersList = ""
-    $.each(response.DataArr[targetCardIndex].RelationStruct, function (key, value) {
+    $.each(response[targetCardIndex].RelationStruct, function (key, value) {
         key = key.replace(/-/g, ", ");
         key = key.replace(/_/g, " ");
         key = titleCase(key);
@@ -90,7 +91,7 @@ function openModal(modalReference) {
         });
         concertDates += "<br>"
     });
-    $.each(response.DataArr[targetCardIndex].Members, function (key, value) {
+    $.each(response[targetCardIndex].Members, function (key, value) {
         membersList += value + "<br>"
     });
 
@@ -98,6 +99,6 @@ function openModal(modalReference) {
     $('#modal').modal('show');
     $('#modal').find("#modal-body").html(concertDates);
     $('#modal').find("#modal-body-members").html(membersList);
-    $('#modal .modal-title').text(response.DataArr[targetCardIndex].Name);
-    $('#modal-img').attr("src", response.DataArr[targetCardIndex].Image);
+    $('#modal .modal-title').text(response[targetCardIndex].Name);
+    $('#modal-img').attr("src", response[targetCardIndex].Image);
 }
