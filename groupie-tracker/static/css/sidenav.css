@@ -41,7 +41,7 @@
     transition: 0.3s;
 }
 
-.sidenav .form{
+.sidenav .form {
     padding: 8px 32px;
     text-decoration: none;
     /* font-size: 25px; */
@@ -176,4 +176,14 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: rgb(94, 94, 94);
+}
+
+#reset-filter {
+    padding-left: 8px;
+    color: rgb(153, 0, 0);
+    cursor: pointer;
+}
+
+#reset-filter:hover {
+    font-size: 20px;
 }

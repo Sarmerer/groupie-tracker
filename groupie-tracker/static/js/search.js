@@ -14,7 +14,7 @@ $(document).ready(function () {
                 success: function (retrievedData) {
                     if (retrievedData === null) {
                         $('#container').empty();
-                        $('#nothing-found').show();
+                        $('#nothing-found').fadeIn("normal")
                     } else {
                         $('#nothing-found').hide();
                     }

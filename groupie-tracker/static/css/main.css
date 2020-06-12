@@ -90,3 +90,11 @@ html {
 
     }
 }
+
+#nothing-found img {
+    width: 300px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+
+}
