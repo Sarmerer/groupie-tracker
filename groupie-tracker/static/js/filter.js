@@ -23,6 +23,23 @@ $(document).ready(function () {
     });
 });
 
+$(document).ready(function () {
+    $('.clear-filters').click(function () {
+        $('#nothing-found').hide();
+        $.each(checkboxes, function (_, box) {
+            if ($('#' + box).is(":checked")) {
+                $('#' + box).prop("checked", false);
+                $('#' + box + 'Input').each(function() {
+                    $(this).val('');
+              });
+                $('#' + box + 'Input').hide();
+            }
+        });
+        $('#container').empty();
+        updateCards(9)
+    });
+});
+
 var checkers = {
     dateCreated: checkCreationDate,
     album: checkFirstAlbumDate,
@@ -37,7 +54,7 @@ $(document).ready(function () {
             $('#nothing-found').hide();
             console.clear();
             response = [];
-            $.each(checkboxes, function (_y, box) {
+            $.each(checkboxes, function (_, box) {
                 if ($('#' + box).is(":checked")) {
                     checkers[box]();
                     //$('#' + box).prop("checked", false);
