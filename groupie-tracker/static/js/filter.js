@@ -93,7 +93,7 @@ function checkMemberAmount() {
 function checkCountries() {
     var checkedCountries = []
     var data = getFilteredArtists()
-    $.each(countriesChecboxes, function (_, box) {
+    $.each(countries, function (_, box) {
         if ($('#' + box.replace(/\s+/g, '')).is(":checked")) {
             checkedCountries.push(box.toLowerCase())
         }
