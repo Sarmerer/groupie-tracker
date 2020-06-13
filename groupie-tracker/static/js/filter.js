@@ -73,25 +73,23 @@ $('.form').change(function () {
 });
 
 $(document).ready(function () {
-    if (validate()) {
-        $('#apply-filter').click(function () {
-            $('#container').empty();
-            $('#search').val("");
-            $('#nothing-found').hide();
-            console.clear();
-            response = [];
-            $.each(checkboxes, function (_, box) {
-                if ($('#' + box).is(":checked")) {
-                    checkers[box]();
-                }
-            });
-            if (response.length === 0) {
-                $('#nothing-found').show();
+    $('#apply-filter').click(function () {
+        $('#container').empty();
+        $('#search').val("");
+        $('#nothing-found').hide();
+        console.clear();
+        response = [];
+        $.each(checkboxes, function (_, box) {
+            if ($('#' + box).is(":checked")) {
+                checkers[box]();
             }
-            navControl("0", "")
-            navOpened = false
         });
-    }
+        if (response.length === 0) {
+            $('#nothing-found').show();
+        }
+        navControl("0", "")
+        navOpened = false
+    });
 });
 
 function checkCreationDate() {
@@ -138,10 +136,11 @@ function checkFirstAlbumDate() {
 }
 
 function checkMemberAmount() {
-    var membersAmount = parseInt($("#membersNum").text());
+    var membersFrom = parseInt($("#slider-range").slider("values", 0));
+    var membersTo = parseInt($("#slider-range").slider("values", 1));
     var data = getFilteredArtists();
     $.each(data, function (index, value) {
-        if (value.Members.length === membersAmount) {
+        if (value.Members.length >= membersFrom && value.Members.length <= membersTo) {
             response.push(data[index]);
             appendCard(value.ArtistsID - 1)
         }
@@ -209,8 +208,4 @@ function appendCard(index) {
             </div>
         </div>
     </div>`).hide().slideDown('normal');
-}
-
-function validate() {
-    return true
 }

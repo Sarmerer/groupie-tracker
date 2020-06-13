@@ -57,22 +57,27 @@ var countries = ["Argentina",
     "United Arab Emirates",
 ]
 
-var slider = document.getElementById("membersInp");
-var output = document.getElementById("membersNum");
-output.innerHTML = slider.value;
-
-slider.oninput = function () {
-    if (slider.value == 10) {
-        output.innerHTML = this.value + "+";
-    } else {
-        output.innerHTML = this.value;
-    }
-}
-
 $(document).ready(function () {
     $(window).scrollTop(0);
     $('#dateCreatedInput, #albumInput, #membersInput, #concertsInput').hide();
     displayConcerts()
+    $(function () {
+        $("#slider-range").slider({
+            range: true,
+            min: 1,
+            max: 10,
+            values: [0, 10],
+            slide: function (event, ui) {
+                if (ui.values[0] === ui.values[1]) {
+                    $("#membersNum").text(ui.values[0]);
+                } else {
+                    $("#membersNum").text(ui.values[0] + " - " + ui.values[1]);
+                }
+            }
+        });
+        $("#membersNum").text($("#slider-range").slider("values", 0) +
+            " - " + $("#slider-range").slider("values", 1));
+    });
 });
 
 $('#openbtn, #closebtn').click(function () {
@@ -88,7 +93,7 @@ $('#openbtn, #closebtn').click(function () {
 function navControl(amount, unit) {
     sideNav.style.width = amount + unit;
     mainDiv.style.marginRight = amount + unit;
-    //heroDiv.style.marginRight = amount + unit;
+    heroDiv.style.marginRight = amount + unit;
 }
 
 $('#dateCreated, #album, #members, #concerts').change(function () {
