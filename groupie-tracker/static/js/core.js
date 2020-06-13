@@ -1,8 +1,31 @@
 var response = null;
-$('#nothing-found').hide();
-updateCards(9);
+var allArtists = null;
 
-//TODO: create function for ajax request
+$(document).ready(function () {
+    $('#nothing-found').hide();
+    updateCards(9);
+});
+
+$(document).ready(function () {
+    return $.ajax({
+        type: "POST",
+        url: '/api/get-artists',
+        dataType: "json",
+        data: {
+            "artists-amount": 52,
+            "random": 0
+        },
+        traditional: true,
+
+        success: function (retrievedData) {
+            allArtists = retrievedData;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown);
+            alert('500 Internal server error')
+        }
+    });
+});
 
 function updateCards(amount) {
     if (amount <= 0 || amount > 52) {

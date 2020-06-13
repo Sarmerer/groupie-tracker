@@ -1,28 +1,6 @@
 var checkboxes = ['dateCreated', 'album', 'members', 'concerts']
 $('#reset-filter').hide();
 $('#apply-filter').prop('disabled', true);
-var allArtists = null;
-
-$(document).ready(function () {
-    return $.ajax({
-        type: "POST",
-        url: '/api/get-artists',
-        dataType: "json",
-        data: {
-            "artists-amount": 52,
-            "random": 0
-        },
-        traditional: true,
-
-        success: function (retrievedData) {
-            allArtists = retrievedData;
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log(errorThrown);
-            alert('500 Internal server error')
-        }
-    });
-});
 
 
 //Function for reset filters
