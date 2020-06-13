@@ -46,8 +46,9 @@ $(document).ready(function () {
             }
         });
         if (cleared) {
-            $('#membersInp').val(5);
-            $('#membersNum').text('5');
+            $("#slider-range").slider('values', 0, 1);
+            $("#slider-range").slider('values', 1, 10);
+            $('#membersNum').text('1 - 10');
             $('#container').empty();
             updateCards(9)
             cleared = false
