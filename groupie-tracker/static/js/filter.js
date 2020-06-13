@@ -1,5 +1,6 @@
 var checkboxes = ['dateCreated', 'album', 'members', 'concerts']
-
+$('#reset-filter').hide();
+$('#apply-filter').prop('disabled', true);
 var allArtists = null;
 
 $(document).ready(function () {
@@ -23,11 +24,15 @@ $(document).ready(function () {
     });
 });
 
+
+//Function for reset filters
+var cleared = false
 $(document).ready(function () {
     $('#reset-filter').click(function () {
         $('#nothing-found').hide();
         $.each(checkboxes, function (_, box) {
             if ($('#' + box).is(":checked")) {
+                cleared = true
                 $('#' + box).prop("checked", false);
                 $('#' + box + 'Input input').each(function () {
                     $(this).val('');
@@ -40,10 +45,13 @@ $(document).ready(function () {
                 });
             }
         });
-        $('#membersInp').val(5);
-        $('#membersNum').text('5');
-        $('#container').empty();
-        updateCards(9)
+        if (cleared) {
+            $('#membersInp').val(5);
+            $('#membersNum').text('5');
+            $('#container').empty();
+            updateCards(9)
+            cleared = false
+        }
     });
 });
 
@@ -53,6 +61,17 @@ var checkers = {
     members: checkMemberAmount,
     concerts: checkCountries
 };
+
+$('.form').change(function () {
+    if ($(".form input:checkbox:checked").length > 0) {
+        $('#reset-filter').show();
+        $('#apply-filter').prop('disabled', false);
+    } else {
+        $('#apply-filter').prop('disabled', true);
+        $('#reset-filter').hide();
+    }
+});
+
 $(document).ready(function () {
     if (validate()) {
         $('#apply-filter').click(function () {
@@ -64,8 +83,6 @@ $(document).ready(function () {
             $.each(checkboxes, function (_, box) {
                 if ($('#' + box).is(":checked")) {
                     checkers[box]();
-                    //$('#' + box).prop("checked", false);
-                    //  $('#' + box + 'Input').hide();
                 }
             });
             if (response.length === 0) {
@@ -82,6 +99,15 @@ function checkCreationDate() {
     var fromDate = parseInt($('#dateCreatedFrom').val());
     var toDate = parseInt($('#dateCreatedTo').val());
 
+    if (Number.isNaN(toDate)) {
+        toDate = 2020;
+    } else if (Number.isNaN(fromDate)) {
+        fromDate = 1950;
+    }
+
+    console.log(fromDate, toDate);
+
+
     $.each(allArtists, function (index, value) {
         if (value.CreationDate >= fromDate && value.CreationDate <= toDate) {
             response.push(allArtists[index]);
@@ -93,6 +119,13 @@ function checkCreationDate() {
 function checkFirstAlbumDate() {
     var fromDate = parseInt($('#albumFrom').val());
     var toDate = parseInt($('#albumTo').val());
+
+    if (Number.isNaN(toDate)) {
+        toDate = 2020;
+    } else if (Number.isNaN(fromDate)) {
+        fromDate = 1950;
+    }
+
     var data = getFilteredArtists();
     $.each(data, function (index, value) {
         var spl = value.FirstAlbum.split("/")
@@ -108,7 +141,7 @@ function checkMemberAmount() {
     var membersAmount = parseInt($("#membersNum").text());
     var data = getFilteredArtists();
     $.each(data, function (index, value) {
-        if (value.Members.length <= membersAmount) {
+        if (value.Members.length === membersAmount) {
             response.push(data[index]);
             appendCard(value.ArtistsID - 1)
         }

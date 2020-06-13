@@ -54,7 +54,7 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 				}
 			} else {
 				myDate, _ := time.Parse("02-01-2006 15:04", art.FirstAlbum+" 04:35")
-				if strings.Contains(myDate.Format("02/01/2006"), searchingFor) {
+				if strings.Contains(myDate.Format("02/01/2006"), searchingFor) || strings.Contains(art.FirstAlbum, searchingFor) {
 					if len(dataArr) >= 1 {
 						if dataArr[currIndex-1].Name != art.Name {
 							data = getData(pers)
@@ -100,9 +100,11 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 			}
 
 			for _, location := range locations.IndexL[art.ID-1].Locations {
+				location = (strings.ToLower(location))
+				locationDefault := location
 				location = strings.Replace(location, "-", " ", -1)
 				location = strings.Replace(location, "_", " ", -1)
-				if strings.Contains(strings.ToLower(location), searchingFor) {
+				if strings.Contains(location, searchingFor) || strings.Contains(locationDefault, searchingFor) {
 					if len(dataArr) >= 1 {
 						if dataArr[currIndex-1].Name != art.Name {
 							data = getData(pers)

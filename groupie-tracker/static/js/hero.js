@@ -6,7 +6,6 @@ var bounceInterval = setInterval(function () {
 $('#scroll').click(function () {
     $('#hero').slideUp("slow");
     clearInterval(bounceInterval);
-    console.log("left");
 });
 
 if ($('#hero').is(':visible')) {
