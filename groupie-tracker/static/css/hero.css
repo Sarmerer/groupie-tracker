@@ -24,17 +24,9 @@
     color: white;
 }
 
-.hero-text h1 {
-    font-size: 220px;
-    line-height: 0.7em;
-}
-
 .hero-text h2 {
     font-family: "Mrs Saint Delafield", cursive;
     color: #b4b4b4 !important;
-    font-size: 60px;
-    margin-bottom: 200px;
-
 }
 
 .button-down {
@@ -45,12 +37,7 @@
     height: 70px;
     width: 70px;
     border-radius: 50%;
-    /* transition: all 0.2s linear; */
 }
-
-/* .button-down:hover {
-    transform: translate3d(0, 10px, 0);
-} */
 
 .button-down::after {
     top: 15px;
@@ -67,4 +54,62 @@
     height: 30px;
     border-top: 2px solid #fff;
     border-left: 2px solid #fff;
+}
+
+/* Very small devices (430px and up) */
+@media (max-width: 430px) {
+    .hero-text h1 {
+        font-size: 7em;
+        line-height: 0.5em;
+    }
+
+    .hero-text h2 {
+        font-size: 3.5em;
+        margin-bottom: 180px;
+
+    }
+
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 431px) {
+    .hero-text h1 {
+        font-size: 10em;
+        line-height: 0.5em;
+    }
+
+    .hero-text h2 {
+        font-size: 3em;
+        margin-bottom: 120px;
+
+    }
+
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 576px) {
+    .hero-text h1 {
+        font-size: 12em;
+        line-height: 0.6em;
+    }
+
+    .hero-text h2 {
+        font-size: 4em;
+        margin-bottom: 250px;
+    }
+
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .hero-text h1 {
+        font-size: 17em;
+        line-height: 0.7em;
+    }
+
+    .hero-text h2 {
+        font-size: 6em;
+        margin-bottom: 180px;
+
+    }
 }
