@@ -112,11 +112,19 @@ $(document).ready(function () {
 
 $('#openbtn, #closebtn').click(function () {
     if (navOpened) {
-        navControl("0", "")
-        navOpened = false
+        if (screen.width < 576) {
+            sideNav.style.width = "0";
+        } else {
+            navControl("0", "")
+            navOpened = false
+        }
     } else {
-        navControl("280", "px")
-        navOpened = true
+        if (screen.width < 576) {
+            sideNav.style.width = "100%";
+        } else {
+            navControl("280", "px")
+            navOpened = true
+        }
     }
 });
 
