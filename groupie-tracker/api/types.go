@@ -1,5 +1,6 @@
 package api
 
+//Response type
 type Response struct {
 	Artists   string
 	Locations string
@@ -7,6 +8,7 @@ type Response struct {
 	Relation  string
 }
 
+//Artist type
 type Artist struct {
 	ID           int
 	Image        string
@@ -19,36 +21,44 @@ type Artist struct {
 	Relations    string
 }
 
+//Locations type
 type Locations struct {
 	IndexL []IndexL `json:"index"`
 }
 
+//Dates type
 type Dates struct {
 	IndexD []IndexD `json:"index"`
 }
 
+//Relation type
 type Relation struct {
 	IndexR []IndexR `json:"index"`
 }
 
+//IndexL type
 type IndexL struct {
 	ID        int
 	Locations []string
 	Dates     string
 }
 
+//IndexD type
 type IndexD struct {
 	ID    int
 	Dates []string
 }
 
+//IndexR type
 type IndexR struct {
 	ID             int
-	DatesLocations M
+	DatesLocations realtionMap
 }
 
-type M map[string][]string
+//realtionMap map
+type realtionMap map[string][]string
 
+//Data type
 type Data struct {
 	ArtistsID     int
 	Image         string
@@ -64,15 +74,11 @@ type Data struct {
 	LocationsDates string
 
 	Dates          []string
-	RelationStruct M
+	RelationStruct realtionMap
 
 	ErrorCode int
 	Error     string
 
 	FoundBy []string
 	JSONLen int
-}
-
-type Result struct {
-	DataArr []Data
 }

@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"time"
 
-	APIpackage "./api"
+	api "./api"
 )
 
 var indexTpl *template.Template
@@ -26,7 +26,7 @@ func init() {
 	log.Printf("Parsing started, if something goes wrong, program will terminate in %v seconds.", timeToWait)
 	go func() {
 		go func() {
-			APIpackage.InitAPI()
+			api.InitAPI()
 			wg.Done()
 		}()
 		wg.Wait()
@@ -48,7 +48,7 @@ func main() {
 	router := http.NewServeMux()
 
 	router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	router.Handle("/api/", http.StripPrefix("/api/", http.HandlerFunc(APIpackage.APIHandler)))
+	router.Handle("/api/", http.StripPrefix("/api/", http.HandlerFunc(api.Handler)))
 	router.HandleFunc("/favicon.ico", faviconHandler)
 	router.HandleFunc("/", index)
 
@@ -94,7 +94,7 @@ func callErrorPage(w http.ResponseWriter, r *http.Request, errorCode int) {
 		errorCode = 500
 	}
 
-	data404 := APIpackage.Data{
+	data404 := api.Data{
 		ErrorCode: errorCode,
 		Error:     errorMsg,
 	}

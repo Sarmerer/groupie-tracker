@@ -15,6 +15,7 @@ var relation Relation
 
 var initComplete = false
 
+//InitAPI function
 func InitAPI() {
 	//parse api and save everthing into the struct
 	var wg sync.WaitGroup
@@ -32,7 +33,8 @@ func InitAPI() {
 	initComplete = true
 }
 
-func APIHandler(w http.ResponseWriter, r *http.Request) {
+//Handler function
+func Handler(w http.ResponseWriter, r *http.Request) {
 	if initComplete {
 		log.Println("Received request, path:", r.URL.Path)
 		switch r.URL.Path {
