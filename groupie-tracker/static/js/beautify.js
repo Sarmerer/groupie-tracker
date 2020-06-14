@@ -113,22 +113,22 @@ $(document).ready(function () {
   });
 });
 
-$('#openbtn, #closebtn').click(function () {
-    if (navOpened) {
-        if (screen.width < 576) {
-            sideNav.style.width = "0";
-        } else {
-            navControl("0", "")
-            navOpened = false
-        }
+$("#openbtn, #closebtn").click(function () {
+  if (navOpened) {
+    if (screen.width < 576) {
+      sideNav.style.width = "0";
     } else {
-        if (screen.width < 576) {
-            sideNav.style.width = "100%";
-        } else {
-            navControl("280", "px")
-            navOpened = true
-        }
+      navControl("0", "");
     }
+    navOpened = false;
+  } else {
+    if (screen.width < 576) {
+      sideNav.style.width = "100%";
+    } else {
+      navControl("280", "px");
+    }
+    navOpened = true;
+  }
 });
 
 function navControl(amount, unit) {
