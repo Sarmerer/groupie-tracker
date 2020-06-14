@@ -17,7 +17,7 @@ var tpl404 *template.Template
 func init() {
 	//TODO: move template parsing
 
-	timeToWait := 10
+	timeToWait := 30
 
 	tStart := time.Now()
 	var wg sync.WaitGroup
