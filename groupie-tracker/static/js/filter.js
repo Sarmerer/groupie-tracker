@@ -1,7 +1,8 @@
 var checkboxes = ["dateCreated", "album", "members", "concerts"];
 $("#reset-filter").hide();
 $("#apply-filter").prop("disabled", true);
-allArtists = JSON.parse(localStorage.getItem("allArtists"));
+
+var requestData = {};
 
 //Function for reset filters
 var cleared = false;
@@ -57,15 +58,37 @@ $(document).ready(function () {
     $("#search").val("");
     $("#nothing-found").hide();
     console.clear();
-    response = [];
+    response = {};
+    requestData = {};
     $.each(checkboxes, function (_, box) {
       if ($("#" + box).is(":checked")) {
         checkers[box]();
       }
     });
-    if (response.length === 0) {
-      $("#nothing-found").show();
-    }
+
+    $.ajax({
+      type: "POST",
+      url: "/api/filter",
+      dataType: "json",
+      data: requestData,
+      traditional: true,
+
+      success: function (retrievedData) {
+
+        response = retrievedData;
+        if (response === null) {
+          $("#nothing-found").show();
+        } else {
+          $.each(retrievedData, function (index, _) {
+            appendCard(index);
+          });
+        }
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown);
+        alert("500 Internal server error");
+      },
+    });
     navControl("0", "");
     navOpened = false;
   });
@@ -77,18 +100,12 @@ function checkCreationDate() {
 
   if (Number.isNaN(toDate)) {
     toDate = 2020;
-  } else if (Number.isNaN(fromDate)) {
+  }
+  if (Number.isNaN(fromDate)) {
     fromDate = 1950;
   }
-
-  console.log(fromDate, toDate);
-
-  $.each(allArtists, function (index, value) {
-    if (value.CreationDate >= fromDate && value.CreationDate <= toDate) {
-      response.push(allArtists[index]);
-      appendCard(value.ArtistsID - 1);
-    }
-  });
+  requestData["creation-date-from"] = fromDate;
+  requestData["creation-date-to"] = toDate;
 }
 
 function checkFirstAlbumDate() {
@@ -97,71 +114,43 @@ function checkFirstAlbumDate() {
 
   if (Number.isNaN(toDate)) {
     toDate = 2020;
-  } else if (Number.isNaN(fromDate)) {
+  }
+  if (Number.isNaN(fromDate)) {
     fromDate = 1950;
   }
 
-  var data = getFilteredArtists();
-  $.each(data, function (index, value) {
-    var spl = value.FirstAlbum.split("/");
-    var date = spl[2];
-    if (date >= fromDate && date <= toDate) {
-      response.push(data[index]);
-      appendCard(value.ArtistsID - 1);
-    }
-  });
+  requestData["first-album-date-from"] = fromDate;
+  requestData["first-album-date-to"] = toDate;
 }
 
 function checkMemberAmount() {
   var membersFrom = parseInt($("#slider-range").slider("values", 0));
   var membersTo = parseInt($("#slider-range").slider("values", 1));
-  var data = getFilteredArtists();
-  $.each(data, function (index, value) {
-    if (
-      value.Members.length >= membersFrom &&
-      value.Members.length <= membersTo
-    ) {
-      response.push(data[index]);
-      appendCard(value.ArtistsID - 1);
-    }
-  });
+
+  requestData["members-from"] = membersFrom;
+  requestData["members-to"] = membersTo;
 }
 
 function checkCountries() {
-  var data = getFilteredArtists();
+  var countriesFilter = "";
   $.each(countries, function (_, box) {
     if ($("#" + box).is(":checked")) {
       country = box.toLowerCase();
-      $.each(data, function (index, value) {
-        $.each(value.Locations, function (_, loc) {
-          if (loc.includes(country)) {
-            response.push(data[index]);
-            appendCard(value.ArtistsID - 1);
-            return false;
-          }
-        });
-      });
+      if (countriesFilter.length < 1) {
+        countriesFilter += country;
+      } else {
+        countriesFilter += "," + country;
+      }
     }
   });
-}
-
-function getFilteredArtists() {
-  var data = [];
-  if (response.length > 0) {
-    data = response;
-    response = [];
-    $("#container").empty();
-  } else {
-    data = allArtists;
-  }
-  return data;
+  requestData["countries"] = countriesFilter;
 }
 
 function appendCard(index) {
-  var id = allArtists[index].ArtistsID;
+  var id = response[index].ArtistsID;
   var members = "<br>";
 
-  $.each(allArtists[index].Members, function (_, memb) {
+  $.each(response[index].Members, function (_, memb) {
     members += memb + "<br>";
   });
 
@@ -175,10 +164,10 @@ function appendCard(index) {
         `'>
         <div class='img-overlay'> 
             <img src='` +
-        allArtists[index].Image +
+        response[index].Image +
         `'></img>
                 <div class='img-text'>` +
-        allArtists[index].CreationDate +
+        response[index].CreationDate +
         `</div>
         </div>
         <div class='info'>
@@ -186,11 +175,11 @@ function appendCard(index) {
                 <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` +
         id +
         `'>` +
-        allArtists[index].Name +
+        response[index].Name +
         `</a>
             </h2> 
                 <div class='title'>1<sup>st</sup> album: ` +
-        allArtists[index].FirstAlbum +
+        response[index].FirstAlbum +
         `</div>
         <div class='desc'>
             <p>` +

@@ -1,32 +1,9 @@
 var response = null;
-var allArtists = null;
-var cachedData = localStorage.getItem("allArtists");
 
 $(document).ready(function () {
   //update cards on page load
   $("#nothing-found").hide();
   updateCards(9);
-  if (cachedData === null) {
-    return $.ajax({
-      type: "POST",
-      url: "/api/get-artists",
-      dataType: "json",
-      data: {
-        "artists-amount": 52,
-        random: 0,
-      },
-      traditional: true,
-
-      success: function (retrievedData) {
-        allArtists = retrievedData;
-        localStorage.setItem("allArtists", JSON.stringify(allArtists));
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-        console.log(errorThrown);
-        alert("500 Internal server error");
-      },
-    });
-  }
 });
 
 function updateCards(amount) {
