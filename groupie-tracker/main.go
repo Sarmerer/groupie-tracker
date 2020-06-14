@@ -49,7 +49,6 @@ func main() {
 
 	router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	router.Handle("/api/", http.StripPrefix("/api/", http.HandlerFunc(api.Handler)))
-	router.HandleFunc("/favicon.ico", faviconHandler)
 	router.HandleFunc("/", index)
 
 	log.Println("Starting server, go to localhost:8080")
@@ -61,7 +60,9 @@ func main() {
 func index(w http.ResponseWriter, r *http.Request) {
 	indexTpl = template.Must(template.ParseGlob("templates/index/*.html"))
 	tpl404 = template.Must(template.ParseGlob("templates/404/*.html"))
-	if r.URL.Path != "/" {
+	if r.URL.Path == "/favicon.ico" {
+		http.ServeFile(w, r, "static/assets/favicon.ico")
+	} else if r.URL.Path != "/" {
 		callErrorPage(w, r, 404)
 		return
 	}
@@ -73,10 +74,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 		callErrorPage(w, r, 405)
 		break
 	}
-}
-
-func faviconHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "static/assets/favicon.ico")
 }
 
 func callErrorPage(w http.ResponseWriter, r *http.Request, errorCode int) {
