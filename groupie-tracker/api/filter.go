@@ -50,8 +50,10 @@ func filterArtists(w http.ResponseWriter, r *http.Request) {
 		}
 		elapsed := time.Since(tStart)
 		log.Printf("Filtering took %.4fs\n", elapsed.Seconds())
+		w.WriteHeader(http.StatusOK)
 		w.Write(b)
 	default:
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("This function does not support " + r.Method + " method."))
 	}
 }

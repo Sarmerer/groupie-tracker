@@ -45,6 +45,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case "filter":
 			filterArtists(w, r)
 		default:
+			w.WriteHeader(http.StatusNotFound)
 			w.Write([]byte(`API does not have that function`))
 		}
 	}

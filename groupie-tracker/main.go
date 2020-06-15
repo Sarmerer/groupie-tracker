@@ -46,13 +46,14 @@ func init() {
 
 func main() {
 	router := http.NewServeMux()
+	port := ":4242"
 
 	router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	router.Handle("/api/", http.StripPrefix("/api/", http.HandlerFunc(api.Handler)))
 	router.HandleFunc("/", index)
 
-	log.Println("Starting server, go to localhost:8080")
-	if err := http.ListenAndServe(":8080", router); err != nil {
+	log.Println("Starting server, go to localhost" + port)
+	if err := http.ListenAndServe(port, router); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -69,8 +70,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
+		w.WriteHeader(http.StatusOK)
 		indexTpl.ExecuteTemplate(w, "index.html", nil)
 	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
 		callErrorPage(w, r, 405)
 		break
 	}
@@ -81,12 +84,16 @@ func callErrorPage(w http.ResponseWriter, r *http.Request, errorCode int) {
 
 	switch errorCode {
 	case 404:
+		w.WriteHeader(http.StatusNotFound)
 		errorMsg = "404 Page not found"
 	case 405:
+		w.WriteHeader(http.StatusMethodNotAllowed)
 		errorMsg = "405 Wrong method"
 	case 400:
+		w.WriteHeader(http.StatusBadRequest)
 		errorMsg = "400 Bad request"
 	default:
+		w.WriteHeader(http.StatusInternalServerError)
 		errorMsg = "500 Internal error"
 		errorCode = 500
 	}

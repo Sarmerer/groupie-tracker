@@ -14,6 +14,7 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 		if r.FormValue("artists-amount") == "" || r.FormValue("random") == "" {
+			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(`artists-amout" and "random" variables are required`))
 			break
 		}
@@ -43,6 +44,7 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 		w.Write(b)
 
 	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
 		w.Write([]byte("This function does not support " + r.Method + " method."))
 	}
 }
