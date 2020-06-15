@@ -1,3 +1,3 @@
-module git.01.alem.school/Sarmerer/groupie-tracker/src/branch/master/groupie-tracker/api
+module github.com/sarmerer/gtracker-api
 
 go 1.14
