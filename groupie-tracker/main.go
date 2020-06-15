@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"time"
 
-	"git.01.alem.school/Sarmerer/groupie-tracker/src/branch/master/groupie-tracker/api"
+	api "./api"
 )
 
 var indexTpl *template.Template
