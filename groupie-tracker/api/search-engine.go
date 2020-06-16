@@ -138,7 +138,6 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 		}
 		elapsed := time.Since(tStart)
 		log.Printf("It took %.4fs to search for %s\n", elapsed.Seconds(), searchingFor)
-		w.WriteHeader(http.StatusOK)
 		w.Write(b)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)

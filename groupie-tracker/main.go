@@ -70,7 +70,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		w.WriteHeader(http.StatusOK)
 		indexTpl.ExecuteTemplate(w, "index.html", nil)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
