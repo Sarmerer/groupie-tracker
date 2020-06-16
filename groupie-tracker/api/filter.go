@@ -116,10 +116,9 @@ func countries(country string, filteredArtists *[]Data) {
 
 func getFilteredArtists(filteredArtists *[]Data) []Data {
 	var data []Data
-	pointerToFilteredArtists := filteredArtists
 	if len(*filteredArtists) >= 1 {
 		data = *filteredArtists
-		*pointerToFilteredArtists = nil
+		*filteredArtists = nil
 	} else {
 		if len(allArtists) == 0 {
 			for pers := range artists {
@@ -130,9 +129,4 @@ func getFilteredArtists(filteredArtists *[]Data) []Data {
 		data = allArtists
 	}
 	return data
-}
-
-func nilSetter(filterArtists *[]Data) *[]Data {
-	filterArtists = nil
-	return filterArtists
 }
