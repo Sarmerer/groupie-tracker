@@ -34,59 +34,6 @@ var mainDiv = document.getElementById("main");
 var heroDiv = document.getElementById("hero");
 var navOpened = false;
 
-var countries = [
-  "Argentina",
-  "Australia",
-  "Austria",
-  "Belarus",
-  "Belgium",
-  "Brasil",
-  "Brazil",
-  "Canada",
-  "Chile",
-  "China",
-  "Colombia",
-  "Costa Rica",
-  "Czech Republic",
-  "Denmark",
-  "Finland",
-  "France",
-  "French Polynesia",
-  "Germany",
-  "Greece",
-  "Hungary",
-  "India",
-  "Indonesia",
-  "Ireland",
-  "Italy",
-  "Japan",
-  "Korea",
-  "Mexico",
-  "Netherlands Antilles",
-  "Netherlands",
-  "New Caledonia",
-  "New Zealand",
-  "Norway",
-  "Peru",
-  "Philippine",
-  "Philippines",
-  "Poland",
-  "Portugal",
-  "Qatar",
-  "Romania",
-  "Saudi Arabia",
-  "Slovakia",
-  "Spain",
-  "Sweden",
-  "Switzerland",
-  "Taiwan",
-  "Thailand",
-  "UK",
-  "US",
-  "USA",
-  "United Arab Emirates",
-];
-
 $(document).ready(function () {
   $(window).scrollTop(0);
   $("#dateCreatedInput, #albumInput, #membersInput, #concertsInput").hide();
@@ -125,7 +72,7 @@ $("#openbtn, #closebtn").click(function () {
     if (screen.width < 576) {
       sideNav.style.width = "100%";
     } else {
-      navControl("280", "px");
+      navControl("330", "px");
     }
     navOpened = true;
   }
@@ -151,21 +98,24 @@ $("#dateCreated, #album, #members, #concerts").change(function () {
 });
 
 function displayConcerts() {
-  countries.forEach((country) => {
+  $.each(countries, function (_, value) {
+    ctr = value.replace(/-/g, ", ");
+    ctr = ctr.replace(/_/g, " ");
+    ctr = titleCase(ctr);
+
     $("#concerts-content").append(
-      `
-        <div class="form-check">
+      `<div class="form-check">
             <input class="form-check-input position-static" type="checkbox" 
             id = "` +
-        country +
+        value +
         `"
             value = "` +
-        country +
+        ctr +
         `" >
         <label class = "form-check-label" for = "` +
-        country.replace(/\s+/g, "") +
+        ctr +
         `" > ` +
-        country +
+        ctr +
         ` </label> 
         </div>`
     );

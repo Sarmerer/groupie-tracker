@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -9,9 +10,7 @@ import (
 	"time"
 )
 
-var resArr []Data
 var allArtists []Data
-var data Data
 
 func filterArtists(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
@@ -29,22 +28,22 @@ func filterArtists(w http.ResponseWriter, r *http.Request) {
 
 		countriesIn := r.FormValue("countries")
 
-		resArr = nil
+		var filteredArtists []Data
 
 		if creationFrom != "" && creationTo != "" {
-			creationDate(creationFrom, creationTo)
+			creationDate(creationFrom, creationTo, &filteredArtists)
 		}
 		if albumFrom != "" && albumTo != "" {
-			firstAlbum(albumFrom, albumTo)
+			firstAlbum(albumFrom, albumTo, &filteredArtists)
 		}
 		if membersFrom != "" && membersTo != "" {
-			members(membersFrom, membersTo)
+			members(membersFrom, membersTo, &filteredArtists)
 		}
 		if countriesIn != "" {
-			countries(countriesIn)
+			countries(countriesIn, &filteredArtists)
 		}
 
-		b, err := json.Marshal(resArr)
+		b, err := json.Marshal(filteredArtists)
 		if err != nil {
 			log.Println("Error during json marshlling. Error:", err)
 		}
@@ -57,61 +56,57 @@ func filterArtists(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func creationDate(from, to string) {
+func creationDate(from, to string, filteredArtists *[]Data) {
 	fromInt, _ := strconv.Atoi(from)
 	toInt, _ := strconv.Atoi(to)
 
-	rangeOver := getFilteredArtists()
+	rangeOver := getFilteredArtists(filteredArtists)
 
 	for _, art := range rangeOver {
 		if (art.CreationDate >= fromInt) && (art.CreationDate <= toInt) {
-			data = getData(art.ArtistsID - 1)
-			resArr = append(resArr, data)
+			*filteredArtists = append(*filteredArtists, getData(art.ArtistsID-1))
 		}
 	}
 }
 
-func firstAlbum(from, to string) {
+func firstAlbum(from, to string, filteredArtists *[]Data) {
 	fromInt, _ := strconv.Atoi(from)
 	toInt, _ := strconv.Atoi(to)
 
-	rangeOver := getFilteredArtists()
+	rangeOver := getFilteredArtists(filteredArtists)
 
 	for _, art := range rangeOver {
 		spl := strings.Split(art.FirstAlbum, "/")
 		date, _ := strconv.Atoi(spl[2])
 		if (date >= fromInt) && (date <= toInt) {
-			data = getData(art.ArtistsID - 1)
-			resArr = append(resArr, data)
+			*filteredArtists = append(*filteredArtists, getData(art.ArtistsID-1))
 		}
 	}
 }
 
-func members(from, to string) {
+func members(from, to string, filteredArtists *[]Data) {
 	fromInt, _ := strconv.Atoi(from)
 	toInt, _ := strconv.Atoi(to)
 
-	rangeOver := getFilteredArtists()
+	rangeOver := getFilteredArtists(filteredArtists)
 
 	for _, art := range rangeOver {
 		if (len(art.Members) >= fromInt) && (len(art.Members) <= toInt) {
-			data = getData(art.ArtistsID - 1)
-			resArr = append(resArr, data)
+			*filteredArtists = append(*filteredArtists, getData(art.ArtistsID-1))
 		}
 	}
 }
 
-func countries(country string) {
+func countries(country string, filteredArtists *[]Data) {
 	spl := strings.Split(country, ",")
 
-	rangeOver := getFilteredArtists()
+	rangeOver := getFilteredArtists(filteredArtists)
 
 	for _, c := range spl {
 		for _, art := range rangeOver {
 			for _, loc := range art.Locations {
 				if strings.Contains(loc, c) {
-					data = getData(art.ArtistsID - 1)
-					resArr = append(resArr, data)
+					*filteredArtists = append(*filteredArtists, getData(art.ArtistsID-1))
 					break
 				}
 			}
@@ -119,18 +114,25 @@ func countries(country string) {
 	}
 }
 
-func getFilteredArtists() []Data {
+func getFilteredArtists(filteredArtists *[]Data) []Data {
 	var data []Data
-	if len(resArr) >= 1 {
-		data = resArr
-		resArr = nil
+	pointerToFilteredArtists := filteredArtists
+	if len(*filteredArtists) >= 1 {
+		data = *filteredArtists
+		*pointerToFilteredArtists = nil
 	} else {
 		if len(allArtists) == 0 {
 			for pers := range artists {
 				allArtists = append(allArtists, getData(pers))
 			}
+			fmt.Println("Updating all artists")
 		}
 		data = allArtists
 	}
 	return data
+}
+
+func nilSetter(filterArtists *[]Data) *[]Data {
+	filterArtists = nil
+	return filterArtists
 }
