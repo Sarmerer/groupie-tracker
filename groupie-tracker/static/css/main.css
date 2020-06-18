@@ -3,98 +3,96 @@
 
 body,
 html {
-    height: 100%;
-    background: #f2f2f2 !important;
-    font-family: Avenir !important;
-    margin: 0;
+  height: 100%;
+  background: #f2f2f2 !important;
+  font-family: Avenir !important;
+  margin: 0;
 }
 
 .container {
-    margin: 40px 130px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: unset;
-    flex-wrap: wrap;
+  margin: 40px 130px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: unset;
+  flex-wrap: wrap;
 }
 
 .search-container {
-    font-size: 30px;
-    margin: 30px 130px 0 130px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  font-size: 30px;
+  margin: 30px 130px 0 130px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .search-container #search-icon {
-    margin-left: 5px;
-    margin-right: 10px;
-    color: rgb(133, 0, 0);
-    align-self: flex-end;
+  margin-left: 5px;
+  margin-right: 10px;
+  color: rgb(133, 0, 0);
+  align-self: flex-end;
 }
 
 .search-container #filter {
-    cursor: pointer;
-    margin-left: 5px;
-    margin-right: 5px;
-    color: rgb(133, 0, 0);
-    align-self: flex-end;
+  cursor: pointer;
+  margin-left: 5px;
+  margin-right: 5px;
+  color: rgb(133, 0, 0);
+  align-self: flex-end;
 }
 
 #search {
-    outline: none;
-    width: 65%;
-    height: auto;
-    background-color: transparent;
-    border: none;
-    border-bottom: 1px solid rgb(133, 0, 0);
-    text-align: center;
+  outline: none;
+  width: 65%;
+  height: auto;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid rgb(133, 0, 0);
+  text-align: center;
 }
 
 .search-container:hover #search {
-    border-bottom: 1px solid rgb(90, 0, 0);
+  border-bottom: 1px solid rgb(90, 0, 0);
 }
 
 .search-container:hover #search-icon {
-    color: rgb(90, 0, 0);
+  color: rgb(90, 0, 0);
 }
 
 .modal {
-    text-align: center;
+  text-align: center;
 }
 
 .modal img {
-    width: 220px;
-    height: auto;
-    margin-left: auto;
-    margin-right: auto;
+  width: 220px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .footer {
-    padding: 25px 150px;
-    overflow: hidden;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    z-index: 1;
+  padding: 25px 150px;
+  overflow: hidden;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 1;
 }
 
 @media (max-width: 500px) {
-    #search {
-        width: 90%;
-    }
+  #search {
+    width: 90%;
+  }
 
-    .search-container {
-        margin: 30px 40px 0 40px;
-
-    }
+  .search-container {
+    margin: 30px 40px 0 40px;
+  }
 }
 
 #nothing-found img {
-    width: 300px;
-    height: auto;
-    margin-left: auto;
-    margin-right: auto;
-
+  width: 300px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
 }

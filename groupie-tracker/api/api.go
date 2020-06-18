@@ -36,7 +36,7 @@ func InitAPI() {
 //Handler function
 func Handler(w http.ResponseWriter, r *http.Request) {
 	if initComplete {
-		log.Println("Received request, path:", r.URL.Path)
+		log.Printf("Received request. IP: %s Method: %s Action: %s\n", r.RemoteAddr, r.Method, r.URL)
 		switch r.URL.Path {
 		case "find":
 			findArtist(w, r)

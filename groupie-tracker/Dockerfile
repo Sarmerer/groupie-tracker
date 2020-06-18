@@ -1,15 +1,11 @@
-FROM golang:onbuild
-
+FROM golang:latest
 LABEL authors="sarmerer, sarmai" \
     maintainer="sarmerer, sarmai" \
     version="1.0" \
-    description="ascii-asrt-web"
-
+    description="groupie-tracker"
 RUN mkdir /app
-ADD . /app
 WORKDIR /app
-RUN go build -o gtracker
-
-FROM alpine:latest AS production
-COPY --from=builder /app .
-CMD ["./gtracker"]
+COPY . /app
+RUN go build -o main .
+EXPOSE 4242
+CMD ["./main"]

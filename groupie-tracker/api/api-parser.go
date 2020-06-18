@@ -37,7 +37,7 @@ func sendRequest(link string) {
 		json.Unmarshal(responseData, &relation)
 		break
 	default:
-		fmt.Println("500 internal error")
+		log.Println("500 Internal error")
 		break
 	}
 	return

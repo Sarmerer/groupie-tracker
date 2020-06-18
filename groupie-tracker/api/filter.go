@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -126,7 +125,6 @@ func getFilteredArtists(filteredArtists *[]Data, firstSearch bool) []Data {
 			for pers := range artists {
 				allArtists = append(allArtists, getData(pers))
 			}
-			fmt.Println("Updating all artists")
 		}
 		data = allArtists
 	}

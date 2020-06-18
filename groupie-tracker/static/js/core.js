@@ -88,39 +88,40 @@ function updateCards(amount) {
 }
 
 function openModal(modalReference) {
-  var targetCardIndex = modalReference;
-  $.each(response, function (key, value) {
-    if (value.ArtistsID === modalReference) {
-      targetCardIndex = key;
-      return false;
-    }
-  });
-  if (targetCardIndex < 0) {
-    alert("400 Bad request");
-    return;
-  }
-
-  var concertDates = "";
-  var membersList = "";
-
-  $.each(response[targetCardIndex].RelationStruct, function (key, value) {
-    key = key.replace(/-/g, ", ");
-    key = key.replace(/_/g, " ");
-    key = titleCase(key);
-    concertDates += key + "<br>";
-    $.each(value, function (index, date) {
-      concertDates += date + "<br>";
+  $(document).ready(function () {
+    var targetCardIndex = modalReference;
+    $.each(response, function (key, value) {
+      if (value.ArtistsID === modalReference) {
+        targetCardIndex = key;
+        return false;
+      }
     });
-    concertDates += "<br>";
-  });
-  $.each(response[targetCardIndex].Members, function (key, value) {
-    membersList += value + "<br>";
-  });
+    if (targetCardIndex < 0) {
+      alert("400 Bad request");
+      return;
+    }
 
-  $("#modal").modal("toggle");
-  $("#modal").modal("show");
-  $("#modal").find("#modal-body").html(concertDates);
-  $("#modal").find("#modal-body-members").html(membersList);
-  $("#modal .modal-title").text(response[targetCardIndex].Name);
-  $("#modal-img").attr("src", response[targetCardIndex].Image);
+    var concertDates = "";
+    var membersList = "";
+
+    $.each(response[targetCardIndex].RelationStruct, function (key, value) {
+      key = key.replace(/-/g, ", ");
+      key = key.replace(/_/g, " ");
+      key = titleCase(key);
+      concertDates += key + "<br>";
+      $.each(value, function (index, date) {
+        concertDates += date + "<br>";
+      });
+      concertDates += "<br>";
+    });
+    $.each(response[targetCardIndex].Members, function (key, value) {
+      membersList += value + "<br>";
+    });
+
+    $("#modal").modal("show");
+    $("#modal").find("#modal-body").html(concertDates);
+    $("#modal").find("#modal-body-members").html(membersList);
+    $("#modal .modal-title").text(response[targetCardIndex].Name);
+    $("#modal-img").attr("src", response[targetCardIndex].Image);
+  });
 }
