@@ -15,8 +15,8 @@ var indexTpl *template.Template
 var tpl404 *template.Template
 
 func init() {
-	indexTpl = template.Must(template.ParseGlob("templates/index/*.html"))
-	tpl404 = template.Must(template.ParseGlob("templates/404/*.html"))
+	// indexTpl = template.Must(template.ParseGlob("templates/index/*.html"))
+	// tpl404 = template.Must(template.ParseGlob("templates/404/*.html"))
 
 	timeToWait := 30
 
@@ -60,6 +60,8 @@ func main() {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
+	indexTpl = template.Must(template.ParseGlob("templates/index/*.html"))
+	tpl404 = template.Must(template.ParseGlob("templates/404/*.html"))
 	if r.URL.Path == "/favicon.ico" {
 		http.ServeFile(w, r, "static/assets/favicon.ico")
 	} else if r.URL.Path != "/" {
