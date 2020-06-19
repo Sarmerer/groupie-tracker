@@ -44,6 +44,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			getArtists(w, r)
 		case "filter":
 			filterArtists(w, r)
+		case "geocode":
+			getGeocode(w, r)
 		default:
 			w.WriteHeader(http.StatusNotFound)
 			w.Write([]byte(`API does not have that function`))

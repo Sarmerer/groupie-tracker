@@ -82,3 +82,13 @@ type Data struct {
 	FoundBy []string
 	JSONLen int
 }
+
+type Geodata struct {
+	IndexG []IndexG `json:"index"`
+}
+
+type IndexG struct {
+	CountryCoords geodataMap
+}
+
+type geodataMap map[string][]string

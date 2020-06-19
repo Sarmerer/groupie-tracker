@@ -117,75 +117,79 @@ function openModal(modalReference) {
     $("#modal-img").attr("src", response[targetCardIndex].Image);
     setTimeout(() => {
       if (!mapCreated) {
+        getGeocodes();
         createMap();
         updateMarkers();
         mapCreated = true;
       } else {
+        getGeocodes();
         updateMarkers();
       }
     }, 1000);
   });
 }
 
-function getGeocodes(strArr) {}
+function getGeocodes(strArr) {
+  var query = "";
+  $.each(response[targetCardIndex].RelationStruct, function (key, value) {
+    if (query.length < 1) {
+      query += key;
+    } else {
+      query += "," + key;
+    }
+  });
+
+  $.ajax({
+    async: false,
+    type: "POST",
+    url: "/api/geocode",
+    data: {
+      query: query,
+    },
+    dataType: "json",
+    success: function (response) {
+      mapMarkers = response;
+    },
+  });
+  console.log(mapMarkers);
+}
 
 function createMap() {
+  var attribution = new ol.control.Attribution({
+    collapsible: false,
+  });
+
   map = new ol.Map({
-    controls: ol.control.defaults({
-      attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
-        collapsible: false,
-      }),
-    }),
+    controls: ol.control.defaults({ attribution: false }).extend([attribution]),
     layers: [
       new ol.layer.Tile({
-        source: new ol.source.OSM(),
+        source: new ol.source.OSM({
+          url: "https://tile.openstreetmap.be/osmbe/{z}/{x}/{y}.png",
+          attributions: [
+            ol.source.OSM.ATTRIBUTION,
+            'Tiles courtesy of <a href="https://geo6.be/">GEO-6</a>',
+          ],
+          maxZoom: 18,
+        }),
       }),
     ],
     target: "map",
     view: new ol.View({
-      center: [0, 0],
-      zoom: 2,
+      center: ol.proj.fromLonLat([4.35247, 50.84673]),
+      maxZoom: 18,
+      zoom: 1,
     }),
   });
 }
 
 function updateMarkers() {
-  vectorSource.clear();
-  $.each(response[targetCardIndex].RelationStruct, function (key, value) {
-    var loc = [];
-    key = key.replace(/-/g, ", ");
-    key = key.replace(/_/g, " ");
-    key = titleCase(key);
-    $.ajax({
-      async: false,
-      type: "GET",
-      url: "https://api.opencagedata.com/geocode/v1/json",
-      data: {
-        key: "2330e739614d4fe288eef5ee4c448706",
-        q: key,
-      },
-      dataType: "json",
-      success: function (response) {
-        if (response.results.length > 0) {
-          loc.push(response.results[0].geometry.lat);
-          loc.push(response.results[0].geometry.lng);
-        } else {
-          alert("Something is wrong with geocoding API.");
-        }
-      },
-    });
-    mapMarkers.push(loc);
-    loc = [];
-  });
-  console.log(mapMarkers);
-
   $.each(mapMarkers, function (_, index) {
     var layer = new ol.layer.Vector({
       source: new ol.source.Vector({
         features: [
           new ol.Feature({
             geometry: new ol.geom.Point(
-              ol.proj.fromLonLat([index[1], index[0]])
+              ol.proj.fromLonLat([index.Coords[1], index.Coords[0]])
             ),
           }),
         ],

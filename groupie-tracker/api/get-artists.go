@@ -39,22 +39,9 @@ func getArtists(w http.ResponseWriter, r *http.Request) {
 
 		b, err1 := json.Marshal(dataArr)
 		if err1 != nil {
-			log.Println("Error during json marshlling. Error:", err)
+			log.Println("Error during json marshlling. Error:", err1)
 		}
 		w.Write(b)
-
-		// Countries := make(map[string]string)
-		// for i := 0; i <= 51; i++ {
-		// 	for _, loc := range locations.IndexL[i].Locations {
-		// 		if _, ok := Countries[loc]; !ok {
-		// 			Countries[loc] = `"` + loc + `",`
-		// 		}
-		// 	}
-		// }
-		// for _, ctr := range Countries {
-		// 	fmt.Println(ctr)
-		// }
-
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		w.Write([]byte("This function does not support " + r.Method + " method."))
