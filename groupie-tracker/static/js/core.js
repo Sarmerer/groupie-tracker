@@ -113,17 +113,12 @@ function openModal(modalReference) {
     $("#modal").find("#modal-body-members").html(membersList);
     $("#modal .modal-title").text(response[targetCardIndex].Name);
     $("#modal-img").attr("src", response[targetCardIndex].Image);
-    setTimeout(() => {
-      if (!mapCreated) {
-        getGeocodes();
-        createMap();
-        ymaps.ready(updateMarkers());
-        mapCreated = true;
-      } else {
-        getGeocodes();
-        ymaps.ready(updateMarkers());
-      }
-    }, 1000);
+    if (!mapCreated) {
+      createMap();
+      mapCreated = true;
+    }
+    getGeocodes();
+    ymaps.ready(updateMarkers());
   });
 }
 
@@ -153,7 +148,7 @@ function getGeocodes(strArr) {
 
 function createMap() {
   map = new ymaps.Map("map", {
-    center: [mapMarkers[0].Coords[0], mapMarkers[0].Coords[1]],
+    center: [45.58329, 24.761017],
     zoom: 1,
   });
 }
