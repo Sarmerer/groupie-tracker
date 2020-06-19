@@ -22,7 +22,7 @@ func findArtist(w http.ResponseWriter, r *http.Request) {
 		//convert everything to lower case to ease search algorithm
 		searchingFor := strings.ToLower(r.FormValue("search"))
 		tStart := time.Now()
-		log.Println("Searh started")
+		log.Println("Search started")
 		for pers, art := range artists {
 
 			foundBy := ""

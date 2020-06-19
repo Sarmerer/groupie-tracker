@@ -27,8 +27,6 @@ function updateCards(amount) {
       traditional: true,
 
       success: function (retrievedData) {
-        //console.log(retrievedData)
-
         $("#container").empty();
         response = retrievedData;
         $.each(retrievedData, function (_, value) {
@@ -119,11 +117,11 @@ function openModal(modalReference) {
       if (!mapCreated) {
         getGeocodes();
         createMap();
-        updateMarkers();
+        ymaps.ready(updateMarkers());
         mapCreated = true;
       } else {
         getGeocodes();
-        updateMarkers();
+        ymaps.ready(updateMarkers());
       }
     }, 1000);
   });
@@ -151,51 +149,34 @@ function getGeocodes(strArr) {
       mapMarkers = response;
     },
   });
-  console.log(mapMarkers);
 }
 
 function createMap() {
-  var attribution = new ol.control.Attribution({
-    collapsible: false,
-  });
-
-  map = new ol.Map({
-    controls: ol.control.defaults({ attribution: false }).extend([attribution]),
-    layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM({
-          url: "https://tile.openstreetmap.be/osmbe/{z}/{x}/{y}.png",
-          attributions: [
-            ol.source.OSM.ATTRIBUTION,
-            'Tiles courtesy of <a href="https://geo6.be/">GEO-6</a>',
-          ],
-          maxZoom: 18,
-        }),
-      }),
-    ],
-    target: "map",
-    view: new ol.View({
-      center: ol.proj.fromLonLat([4.35247, 50.84673]),
-      maxZoom: 18,
-      zoom: 1,
-    }),
+  map = new ymaps.Map("map", {
+    center: [mapMarkers[0].Coords[0], mapMarkers[0].Coords[1]],
+    zoom: 1,
   });
 }
 
 function updateMarkers() {
+  map.geoObjects.removeAll();
   $.each(mapMarkers, function (_, index) {
-    var layer = new ol.layer.Vector({
-      source: new ol.source.Vector({
-        features: [
-          new ol.Feature({
-            geometry: new ol.geom.Point(
-              ol.proj.fromLonLat([index.Coords[1], index.Coords[0]])
-            ),
-          }),
-        ],
-      }),
+    var concertDates = "<br>";
+    var locName = index.Name.replace(/-/g, ", ");
+    locName = locName = locName.replace(/_/g, " ");
+    locName = titleCase(locName);
+
+    $.each(response[targetCardIndex].RelationStruct[index.Name], function (_, value) {
+      concertDates += value + "<br>";
     });
-    map.addLayer(layer);
+
+    map.geoObjects.add(
+      new ymaps.Placemark([index.Coords[0], index.Coords[1]], {
+        preset: "islands#icon",
+        iconColor: "#0095b6",
+        hintContent: locName + concertDates,
+      })
+    );
   });
   mapMarkers = [];
 }
