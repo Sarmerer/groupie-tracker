@@ -11,7 +11,7 @@ import (
 
 var allArtists []Data
 
-func filterArtists(w http.ResponseWriter, r *http.Request) {
+func FilterArtists(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 		tStart := time.Now()

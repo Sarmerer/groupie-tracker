@@ -11,7 +11,7 @@ import (
 
 var allGeodata Geodata
 
-func getGeocode(w http.ResponseWriter, r *http.Request) {
+func GetGeocode(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "POST":

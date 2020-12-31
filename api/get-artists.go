@@ -10,7 +10,7 @@ import (
 )
 
 //function that being called when page is reloaded, or search result is clicked
-func getArtists(w http.ResponseWriter, r *http.Request) {
+func GetArtists(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 		if r.FormValue("artists-amount") == "" || r.FormValue("random") == "" {
@@ -53,7 +53,7 @@ func getData(pers int) Data {
 	if err != nil {
 		log.Println("Error during time formatting. Error:", err)
 	}
-	data := Data{
+	return Data{
 		ArtistsID:     artists[pers].ID,
 		Image:         artists[pers].Image,
 		Name:          artists[pers].Name,
@@ -72,7 +72,6 @@ func getData(pers int) Data {
 
 		JSONLen: len(artists),
 	}
-	return data
 }
 
 func sortedNums(size int) []int {

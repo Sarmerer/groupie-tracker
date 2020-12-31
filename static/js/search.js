@@ -2,7 +2,6 @@ $(document).ready(function () {
   $("#search").on(
     "keyup",
     debounce(500, function () {
-      console.log("rquesting");
       if (!$("#search").val()) {
         $("#container").empty();
         updateCards(9);

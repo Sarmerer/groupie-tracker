@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"time"
 
-	api "./api"
+	api "github.com/sarmerer/groupie-tracker/api"
 )
 
 var indexTpl *template.Template
@@ -50,7 +50,10 @@ func main() {
 	port := ":4242"
 
 	router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	router.Handle("/api/", http.StripPrefix("/api/", http.HandlerFunc(api.Handler)))
+	router.HandleFunc("/api/find", api.FindArtist)
+	router.HandleFunc("/api/artists", api.GetArtists)
+	router.HandleFunc("/api/filter", api.FilterArtists)
+	router.HandleFunc("/api/geocode", api.GetGeocode)
 	router.HandleFunc("/", index)
 
 	log.Println("Starting server, go to localhost" + port)
@@ -73,7 +76,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		indexTpl.ExecuteTemplate(w, "index.html", nil)
 	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
 		callErrorPage(w, r, 405)
 		break
 	}
@@ -98,10 +100,12 @@ func callErrorPage(w http.ResponseWriter, r *http.Request, errorCode int) {
 		errorCode = 500
 	}
 
-	data404 := api.Data{
+	tpl404.ExecuteTemplate(w, "404.html", struct {
+		ErrorCode int
+		Error     string
+	}{
 		ErrorCode: errorCode,
 		Error:     errorMsg,
-	}
-	tpl404.ExecuteTemplate(w, "404.html", data404)
+	})
 	return
 }

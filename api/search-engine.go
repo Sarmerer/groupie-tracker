@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func findArtist(w http.ResponseWriter, r *http.Request) {
+func FindArtist(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 
