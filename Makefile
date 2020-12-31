@@ -1,0 +1,9 @@
+docker-run:
+	docker run --rm --name gtracker -p 4434:4434 -d gtracker
+dokcer-build:
+	docker build -f Dockerfile -t gtracker .
+dockerize: docker-build docker-run
+go-build:
+	bash -c "go build -o main"
+go-run:
+	bash -c "go run main.go"

@@ -47,7 +47,7 @@ func init() {
 
 func main() {
 	router := http.NewServeMux()
-	port := ":4242"
+	port := ":4434"
 
 	router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	router.HandleFunc("/api/find", api.FindArtist)
