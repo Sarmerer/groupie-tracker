@@ -148,52 +148,34 @@ function checkCountries() {
 
 function appendCard(index) {
   var id = response[index].ArtistsID;
-  var members = "<br>";
-
-  $.each(response[index].Members, function (_, memb) {
-    members += memb + "<br>";
-  });
 
   $("#container")
     .append(
-      `
-    <div class='card' onclick='openModal(` +
-        id +
-        `)' id='` +
-        id +
-        `'>
-        <div class='img-overlay'> 
-            <img src='` +
-        response[index].Image +
-        `'></img>
-                <div class='img-text'>` +
-        response[index].CreationDate +
-        `</div>
-        </div>
-        <div class='info'>
-             <h2>
-                <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/` +
-        id +
-        `'>` +
-        response[index].Name +
-        `</a>
-            </h2> 
-                <div class='title'>1<sup>st</sup> album: ` +
-        response[index].FirstAlbum +
-        `</div>
-        <div class='desc'>
-            <p>` +
-        members +
-        `</p>
-        </div>
-    </div>
-    <div class='actions'>
-        <div class='overlay'></div>
-            <div class='calendar-container'>
-                <img src='/static/assets/round_date_range_white_18dp.png' class='my-icon'>
-            </div>
-        </div>
-    </div>`
+      `<div class='card' onclick='openModal(${id})' id='${id}'>
+      <div class='img-overlay'>
+         <img src='${response[index].Image}' style='width: 100%'></img>
+         <div class='img-text'>${response[index].CreationDate}
+         </div>
+      </div>
+      <div class='info'>
+         <h2>
+            <a target='_blank' rel='noopener noreferrer' href='https://groupietrackers.herokuapp.com/api/artists/${id}'>
+            ${response[index].Name}
+            </a>
+         </h2>
+         <div class='title'>1<sup>st</sup> album: ${response[index].FirstAlbum}
+         </div>
+         <div class='desc'>
+            <p><br/>${response[index].Members.join("<br/>")}</p>
+         </div>
+      </div>
+      <div class='actions'>
+         <div class='overlay'></div>
+         <div class='calendar-container'>
+            <img src='/static/assets/calendar.svg' class='my-icon'>
+         </div>
+      </div>
+   </div>`
     )
     .hide()
     .slideDown("normal");

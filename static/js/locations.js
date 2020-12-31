@@ -1,4 +1,4 @@
-var countries = [
+const countries = [
   "aalborg-denmark",
   "aarhus-denmark",
   "aberdeen-uk",
