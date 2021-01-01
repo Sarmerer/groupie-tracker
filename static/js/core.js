@@ -36,7 +36,9 @@ function updateCards(amount) {
             .append(
               `<div class='card' onclick='openModal(${id})' id='${id}'>
               <div class='img-overlay'>
-                 <img src='${value.Image}' style='width: 100%'></img>
+                 <img src='${
+                   value.Image
+                 }' style='width: 200px; height: 200px'></img>
                  <div class='img-text'>${value.CreationDate}
                  </div>
               </div>

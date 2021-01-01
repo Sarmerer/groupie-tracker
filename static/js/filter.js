@@ -153,7 +153,9 @@ function appendCard(index) {
     .append(
       `<div class='card' onclick='openModal(${id})' id='${id}'>
       <div class='img-overlay'>
-         <img src='${response[index].Image}' style='width: 100%'></img>
+         <img src='${
+           response[index].Image
+         }' style='width: 200px; height: 200px'></img>
          <div class='img-text'>${response[index].CreationDate}
          </div>
       </div>
