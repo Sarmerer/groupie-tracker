@@ -5,5 +5,5 @@ dokcer-build:
 dockerize: docker-build docker-run
 go-build:
 	bash -c "go build -o main"
-go-run:
+go:
 	bash -c "go run main.go"

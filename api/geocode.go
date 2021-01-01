@@ -28,16 +28,16 @@ func GetGeocode(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error:", err)
 		}
-		jsonData, err1 := ioutil.ReadAll(jsonFile)
-		if err1 != nil {
-			log.Println(err1)
+		jsonData, err := ioutil.ReadAll(jsonFile)
+		if err != nil {
+			log.Println(err)
 		}
 		defer jsonFile.Close()
 		json.Unmarshal(jsonData, &allGeodata)
 		request := strings.Split(r.FormValue("query"), ",")
 
 		for _, loc := range request {
-			for _, coord := range allGeodata.IndexG {
+			for _, coord := range allGeodata.Index {
 				if _, ok := coord.CountryCoords[loc]; ok {
 					country.Name = loc
 					country.Coords = coord.CountryCoords[loc]

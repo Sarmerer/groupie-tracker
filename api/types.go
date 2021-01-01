@@ -1,64 +1,50 @@
 package api
 
-//Response type
-type Response struct {
-	Artists   string
-	Locations string
-	Dates     string
-	Relation  string
+type Cache struct {
+	ArtistsURI   string `json:"artists"`
+	LocationsURI string `json:"locations"`
+	DatesURI     string `json:"dates"`
+	RelationURI  string `json:"relation"`
+
+	Artists   []Artist
+	Locations Locations
+	Dates     Dates
+	Relation  Relation
 }
 
-//Artist type
 type Artist struct {
-	ID           int
-	Image        string
-	Name         string
-	Members      []string
-	CreationDate int
-	FirstAlbum   string
-	Locations    string
-	ConcertDates string
-	Relations    string
+	ID           int      `json:"id"`
+	Image        string   `json:"image"`
+	Name         string   `json:"name"`
+	Members      []string `json:"members"`
+	CreationDate int      `json:"creationDate"`
+	FirstAlbum   string   `json:"firstAlbum"`
+	Locations    string   `json:"locations"`
+	ConcertDates string   `json:"concertDates"`
+	Relations    string   `json:"relations"`
 }
 
-//Locations type
 type Locations struct {
-	IndexL []IndexL `json:"index"`
+	Index []struct {
+		ID        int      `json:"id"`
+		Locations []string `json:"locations"`
+		Dates     string   `json:"dates"`
+	} `json:"index"`
 }
 
-//Dates type
 type Dates struct {
-	IndexD []IndexD `json:"index"`
+	Index []struct {
+		ID    int      `json:"id"`
+		Dates []string `json:"dates"`
+	} `json:"index"`
 }
-
-//Relation type
 type Relation struct {
-	IndexR []IndexR `json:"index"`
+	Index []struct {
+		ID             int `json:"id"`
+		DatesLocations map[string][]string
+	} `json:"index"`
 }
 
-//IndexL type
-type IndexL struct {
-	ID        int
-	Locations []string
-	Dates     string
-}
-
-//IndexD type
-type IndexD struct {
-	ID    int
-	Dates []string
-}
-
-//IndexR type
-type IndexR struct {
-	ID             int
-	DatesLocations realtionMap
-}
-
-//realtionMap map
-type realtionMap map[string][]string
-
-//Data type
 type Data struct {
 	ArtistsID     int
 	Image         string
@@ -72,9 +58,9 @@ type Data struct {
 
 	Locations      []string
 	LocationsDates string
+	RelationStruct map[string][]string
 
-	Dates          []string
-	RelationStruct realtionMap
+	Dates []string
 
 	ErrorCode int
 	Error     string
@@ -84,11 +70,7 @@ type Data struct {
 }
 
 type Geodata struct {
-	IndexG []IndexG `json:"index"`
+	Index []struct {
+		CountryCoords map[string][]string
+	} `json:"index"`
 }
-
-type IndexG struct {
-	CountryCoords geodataMap
-}
-
-type geodataMap map[string][]string

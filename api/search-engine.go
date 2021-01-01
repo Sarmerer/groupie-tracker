@@ -22,11 +22,8 @@ func FindArtist(w http.ResponseWriter, r *http.Request) {
 		//convert everything to lower case to ease search algorithm
 		searchingFor := strings.ToLower(r.FormValue("search"))
 		tStart := time.Now()
-		log.Println("Search started")
-		for pers, art := range artists {
-
+		for pers, art := range cache.Artists {
 			foundBy := ""
-
 			//search for artists by the group name
 			if strings.Contains(strings.ToLower(art.Name), searchingFor) {
 				data = getData(pers)
@@ -99,7 +96,7 @@ func FindArtist(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
-			for _, location := range locations.IndexL[art.ID-1].Locations {
+			for _, location := range cache.Locations.Index[art.ID-1].Locations {
 				location = (strings.ToLower(location))
 				locationDefault := location
 				location = strings.Replace(location, "-", " ", -1)

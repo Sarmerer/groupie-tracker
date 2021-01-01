@@ -49,28 +49,28 @@ func GetArtists(w http.ResponseWriter, r *http.Request) {
 }
 
 func getData(pers int) Data {
-	myDate, err := time.Parse("02-01-2006 15:04", artists[pers].FirstAlbum+" 04:35")
+	myDate, err := time.Parse("02-01-2006 15:04", cache.Artists[pers].FirstAlbum+" 04:35")
 	if err != nil {
 		log.Println("Error during time formatting. Error:", err)
 	}
 	return Data{
-		ArtistsID:     artists[pers].ID,
-		Image:         artists[pers].Image,
-		Name:          artists[pers].Name,
-		Members:       artists[pers].Members,
-		CreationDate:  artists[pers].CreationDate,
+		ArtistsID:     cache.Artists[pers].ID,
+		Image:         cache.Artists[pers].Image,
+		Name:          cache.Artists[pers].Name,
+		Members:       cache.Artists[pers].Members,
+		CreationDate:  cache.Artists[pers].CreationDate,
 		FirstAlbum:    myDate.Format("02/01/2006"),
-		LocationsLink: artists[pers].Locations,
-		ConcertDates:  artists[pers].ConcertDates,
-		Relations:     artists[pers].Relations,
+		LocationsLink: cache.Artists[pers].Locations,
+		ConcertDates:  cache.Artists[pers].ConcertDates,
+		Relations:     cache.Artists[pers].Relations,
 
-		Locations:      locations.IndexL[pers].Locations,
-		LocationsDates: locations.IndexL[pers].Dates,
+		Locations:      cache.Locations.Index[pers].Locations,
+		LocationsDates: cache.Locations.Index[pers].Dates,
 
-		Dates:          dates.IndexD[pers].Dates,
-		RelationStruct: relation.IndexR[pers].DatesLocations,
+		Dates:          cache.Dates.Index[pers].Dates,
+		RelationStruct: cache.Relation.Index[pers].DatesLocations,
 
-		JSONLen: len(artists),
+		JSONLen: len(cache.Artists),
 	}
 }
 

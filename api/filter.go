@@ -122,7 +122,7 @@ func getFilteredArtists(filteredArtists *[]Data, firstSearch bool) []Data {
 		*filteredArtists = nil
 	} else {
 		if len(allArtists) == 0 {
-			for pers := range artists {
+			for pers := range cache.Artists {
 				allArtists = append(allArtists, getData(pers))
 			}
 		}

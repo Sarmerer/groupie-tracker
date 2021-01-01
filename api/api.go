@@ -5,24 +5,19 @@ import (
 )
 
 var apiLink = "https://groupietrackers.herokuapp.com/api"
-var forignAPIRoutes Response
-var artists []Artist
-var locations Locations
-var dates Dates
-var relation Relation
+var cache Cache
 
-//InitAPI function
-func InitAPI() {
+func Parse() {
 	//parse api and save everthing into the struct
 	var wg sync.WaitGroup
 
-	sendRequest(apiLink, &forignAPIRoutes)
+	sendRequest(apiLink, &cache)
 	wg.Add(1)
 	go func() {
-		go sendRequest(forignAPIRoutes.Artists, &artists)
-		go sendRequest(forignAPIRoutes.Locations, &locations)
-		go sendRequest(forignAPIRoutes.Dates, &dates)
-		go sendRequest(forignAPIRoutes.Relation, &relation)
+		go sendRequest(cache.ArtistsURI, &cache.Artists)
+		go sendRequest(cache.LocationsURI, &cache.Locations)
+		go sendRequest(cache.DatesURI, &cache.Dates)
+		go sendRequest(cache.RelationURI, &cache.Relation)
 		wg.Done()
 	}()
 	wg.Wait()

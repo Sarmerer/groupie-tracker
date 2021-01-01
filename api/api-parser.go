@@ -12,7 +12,7 @@ import (
 func sendRequest(link string, pointer interface{}) {
 	res, err := http.Get(link)
 	if err != nil {
-		fmt.Print(err.Error())
+		fmt.Println(err.Error())
 		os.Exit(1)
 	}
 
