@@ -27,7 +27,7 @@ func init() {
 	log.Printf("Parsing started, if something goes wrong, program will terminate in %v seconds.", timeToWait)
 	go func() {
 		go func() {
-			api.InitAPI()
+			api.Parse()
 			wg.Done()
 		}()
 		wg.Wait()
@@ -55,11 +55,8 @@ func main() {
 	router.HandleFunc("/api/filter", api.FilterArtists)
 	router.HandleFunc("/api/geocode", api.GetGeocode)
 	router.HandleFunc("/", index)
-
-	log.Println("Starting server, go to localhost" + port)
-	if err := http.ListenAndServe(port, router); err != nil {
-		log.Fatal(err)
-	}
+	log.Printf("Listening %s\n", "http://localhost:4434")
+	log.Fatal(http.ListenAndServe(port, router))
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
